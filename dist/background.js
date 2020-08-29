@@ -1,1 +1,3 @@
-console.log("background.js");
+export const f = () => {
+  alert('background')
+}
