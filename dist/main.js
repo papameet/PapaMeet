@@ -1,5 +1,3 @@
-const elems = document.querySelectorAll(".timepicker");
-const instances = M.Timepicker.init(elems, {container: '#timepicker'});
 function listenForClick() {
   const join = document.getElementById("join");
   const leave = document.getElementById("leave");
@@ -15,23 +13,25 @@ function listenForClick() {
     leaveTime = leave.value;
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
-        .sendMessage(tabs[0].id, {
-          joinTime,
-          leaveTime,
-        })
-        .then(success)
-        .catch(catchError);
+      .sendMessage(tabs[0].id, {
+        joinTime,
+        leaveTime,
+      })
+      .then(success)
+      .catch(catchError);
     });
   }
   const submit = document.getElementById("submit");
   submit.addEventListener("click", onSubmitClick);
 }
 const catchError = (e) => {console.error(e)}
-console.log("hweawea");
+console.log("new");
 browser.tabs
-  .executeScript({ file: "/content.js" })
-  .then(listenForClick)
-  .catch(catchError);
+.executeScript({ file: "/content.js" })
+.then(listenForClick)
+.catch(catchError);
+const elems = document.querySelectorAll(".timepicker");
+const instances = M.Timepicker.init(elems);
 const timepicker = document.getElementById('timepicker')
 var instance = M.Timepicker.getInstance(elems[0]);
 // timepicker modal comfort zone 300x450

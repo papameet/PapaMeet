@@ -2,12 +2,11 @@
     box-sizing: border-box;
 }
 
-html, body{
-    width: 500px; height: 500px;
+.modal{
+    width: 100% !important;
+    top: 0 !important;
 }
 
-#timepicker{
-    width: 300px;
-    height:300px;
-    overflow: hidden;
+html, body{
+    width: 300px; height: 450px;
 }
