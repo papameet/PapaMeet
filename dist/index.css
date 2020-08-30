@@ -1,12 +1,79 @@
-*{
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
-.modal{
-    width: 100% !important;
-    top: 0 !important;
+#heading {
+  margin: 0;
+  padding: 2rem 0;
+  text-align: center;
+  font-weight: 100;
 }
 
-html, body{
-    width: 300px; height: 450px;
+.modal {
+  box-sizing: border-box;
+  width: 100% !important;
+  top: 0 !important;
+}
+
+html,
+body {
+  width: 300px;
+  height: 460px;
+  background-image: linear-gradient(150deg, #ab9dde, #9ad3e2);
+  color: #ab304d;
+}
+body {
+}
+
+/* button */
+#buttons-div {
+  display: flex;
+  flex-direction: column;
+  padding: 0 2rem;
+}
+
+button {
+  margin-top: 1rem;
+  min-height: 2.5rem;
+  /* border-radius: 5px;
+  border-style: solid;
+  border-width: 1px; */
+  cursor: pointer;
+  transition: background-color 0.3s linear, border 0.2s linear;
+  background-color: rgba(255, 255, 255, 0.258);
+  border-style: solid;
+  border-width: 0px;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0);
+  border-width: 1px;
+  border-color: #ab304d51;
+  border-style: solid;
+}
+
+button:focus {
+  background-color: rgba(255, 255, 255, 0.258);
+  border-width: 1px;
+  border-color: #ab304d51;
+  border-style: solid;
+}
+
+#joinText {
+  display: inline-block;
+  right: 180px;
+  position: absolute;
+  padding-right: 10px;
+}
+#textContainer{
+    display: flex;
+    align-items: center;
+}
+.left{
+    position: absolute;
+    right: 180px;
+}
+.right{
+    position: absolute;
+    left: 140px;
 }

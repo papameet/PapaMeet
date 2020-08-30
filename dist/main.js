@@ -1,7 +1,5 @@
-function listenForClick() {
-  const join = document.getElementById("join");
-  const leave = document.getElementById("leave");
-  let leaveTime, joinTime;
+function listenForSubmit() {
+  console.log("listen");
   function catchError(e) {
     console.log(e);
   }
@@ -9,30 +7,60 @@ function listenForClick() {
     console.log("success");
   }
   function onSubmitClick() {
-    joinTime = join.value;
-    leaveTime = leave.value;
+    console.log("onSubmit click");
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
-      .sendMessage(tabs[0].id, {
-        joinTime,
-        leaveTime,
-      })
-      .then(success)
-      .catch(catchError);
+        .sendMessage(tabs[0].id, {
+          joinTime,
+          leaveTime,
+        })
+        .then(success)
+        .catch(catchError);
     });
   }
   const submit = document.getElementById("submit");
   submit.addEventListener("click", onSubmitClick);
 }
-const catchError = (e) => {console.error(e)}
-console.log("new");
+
+let joinTime, leaveTime;
+function setupTimepickers() {
+  const elems = document.querySelectorAll(".timepicker");
+  const joinInstance = M.Timepicker.init(elems[0], {
+    onCloseStart() {
+      elems[0].innerHTML =
+        "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
+    },
+    onCloseEnd() {
+      joinTime = {
+        hours: this.hours,
+        minutes: this.minutes,
+        amOrPm: this.amOrPm,
+      };
+      let span = document.getElementById("joinSpan");
+      span.innerHTML = this.time + this.amOrPm;
+      console.log("onClose", joinTime);
+    },
+  });
+  const leaveInstance = M.Timepicker.init(elems[1], {
+    onCloseStart() {
+      elems[1].innerHTML =
+        "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
+    },
+    onCloseEnd() {
+      leaveTime = {
+        hours: this.hours,
+        minutes: this.minutes,
+        amOrPm: this.amOrPm,
+      };
+      let span = document.getElementById("leaveSpan");
+      span.innerHTML = span.innerHTML = this.time + this.amOrPm;
+      console.log("onClose", leaveTime);
+    },
+  });
+  // todo: rewrite these functions
+}
+setupTimepickers();
 browser.tabs
-.executeScript({ file: "/content.js" })
-.then(listenForClick)
-.catch(catchError);
-const elems = document.querySelectorAll(".timepicker");
-const instances = M.Timepicker.init(elems);
-const timepicker = document.getElementById('timepicker')
-var instance = M.Timepicker.getInstance(elems[0]);
-// timepicker modal comfort zone 300x450
-instance.open();
+  .executeScript({ file: "/content.js" })
+  .then(listenForSubmit)
+  .catch((e) => console.error("Error occured: " + e));
