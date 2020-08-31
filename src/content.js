@@ -6,11 +6,10 @@
   }
   window.hasRun = true;
 
+  console.log('contentscript')
   browser.runtime.onMessage.addListener((message) =>{
-    console.log('hi')
     const {joinTime, leaveTime} = message;
     console.log(joinTime, leaveTime)
   })
 })();
 
-console.log('contentscript')
