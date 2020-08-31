@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "AutoMeet",
+  "version": "1.0",
+  "description": "Joins and quits meetings automatically.",
+
+  "icons": {
+    "48": "index.jpg"
+  },
+
+  "permissions": [
+    "activeTab"
+  ],
+
+  "browser_action": {
+    "default_icon": "index.jpg",
+    "default_title": "Beastify",
+    "default_popup": "index.html"
+  }
+}
