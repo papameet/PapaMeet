@@ -6,6 +6,6 @@ export function getDateObject(timeObjectFromPicker) {
     const minutes = timeObjectFromPicker.minutes
 
     const date = new Date();
-    date.setHours(hours, minutes);
+    date.setHours(hours, minutes, 0);
     return date;
 }
