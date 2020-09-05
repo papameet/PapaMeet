@@ -1,19 +1,21 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./src/main.js",
-  mode: "development",
+  entry: {
+    main: "./src/main.js",
+    content: "./src/content.js"
+  },
+  mode: "production",
   output: {
-    filename: "main.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
   },
-  plugins: [],
-  devtool: 'cheap-module-source-map',
+  //devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [{ loader: 'style-loader'}, "css-loader"],
       },
     ],
   },

@@ -1,7 +1,7 @@
 import M from "materialize-css"
 //import content from "./content.js"
-import "./index.css"
 import "materialize-css/dist/css/materialize.min.css";
+import "./index.css"
 
 
 
