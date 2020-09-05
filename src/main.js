@@ -67,11 +67,16 @@ function setupTimepickers() {
   });
   // todo: rewrite these functions
 }
-setupTimepickers();
-listenForSubmit()
 
-browser.tabs
+if (!window.everythingSetUp) {
+  setupTimepickers();
+  listenForSubmit();
+  
+  browser.tabs
   .executeScript({ file: "/content.js" })
   .then(listenForSubmit)
   .catch((e) => console.error("Error occured: " + e));
+
+  window.everythingSetUp = true;
+}
 
