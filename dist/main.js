@@ -13056,8 +13056,12 @@ function setupTimepickers() {
   });
   // todo: rewrite these functions
 }
-setupTimepickers();
-listenForSubmit()
+
+if (!window.everythingSetUp) {
+  setupTimepickers();
+  listenForSubmit();
+  window.everythingSetUp = true;
+}
 
 browser.tabs
   .executeScript({ file: "/content.js" })
