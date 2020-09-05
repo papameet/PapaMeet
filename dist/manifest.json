@@ -14,7 +14,7 @@
 
   "browser_action": {
     "default_icon": "index.jpg",
-    "default_title": "Beastify",
+    "default_title": "AutoMeet",
     "default_popup": "index.html"
   }
 }
