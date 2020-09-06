@@ -33,35 +33,35 @@ function listenForSubmit() {
 function setupTimepickers() {
   const elems = document.querySelectorAll(".timepicker");
   const joinInstance = M.Timepicker.init(elems[0], {
-    onCloseStart() {
-      elems[0].innerHTML =
-        "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
-    },
     onCloseEnd() {
       joinTime = {
         hours: this.hours,
         minutes: this.minutes,
         amOrPm: this.amOrPm,
       };
-      let span = document.getElementById("joinSpan");
-      span.innerHTML = this.time + this.amOrPm;
-      console.log("onClose", joinTime);
+      if (this.time !== undefined) {
+        elems[0].innerHTML =
+        "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
+        let span = document.getElementById("joinSpan");
+        span.innerHTML = this.time + this.amOrPm;
+        console.log("onClose", joinTime);
+      }
     },
   });
   const leaveInstance = M.Timepicker.init(elems[1], {
-    onCloseStart() {
-      elems[1].innerHTML =
-        "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
-    },
     onCloseEnd() {
       leaveTime = {
         hours: this.hours,
         minutes: this.minutes,
         amOrPm: this.amOrPm,
       };
-      let span = document.getElementById("leaveSpan");
-      span.innerHTML = span.innerHTML = this.time + this.amOrPm;
-      console.log("onClose", leaveTime);
+      if (this.time !== undefined) {
+        elems[1].innerHTML =
+        "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
+        let span = document.getElementById("leaveSpan");
+        span.innerHTML = span.innerHTML = this.time + this.amOrPm;
+        console.log("onClose", leaveTime);
+      }
     },
   });
   // todo: rewrite these functions
