@@ -1,16 +1,16 @@
-function storeTimesSucess() {
-    console.log("Succesfully stored times to local storage.");
+function storeSucess() {
+    console.log("Succesfully stored to local storage.");
 }
 
-function storeTimesFailure(e) {
-    console.log("Failed to store times with error:", e);
+function storeFailure(e) {
+    console.log("Failed to store with error:", e);
 }
 
 export function saveTimesToStorage(joinTime, leaveTime) {
     //if (joinTime === undefined)
     const toStore = {joinTime: joinTime, leaveTime: leaveTime}
     console.log("Times set to ", toStore);
-    browser.storage.local.set(toStore).then(storeTimesSucess, storeTimesFailure);
+    browser.storage.local.set(toStore).then(storeSucess, storeFailure);
 }
 
 function getTimeFailure(e) {
@@ -39,4 +39,24 @@ function setLeaveTime(time) {
 export function setUpTimesFromStorage() {
     browser.storage.local.get('joinTime').then(setJoinTime, getTimeFailure);
     browser.storage.local.get('leaveTime').then(setLeaveTime, getTimeFailure);
+}
+
+function clearLeaveTimeout(object) {
+    clearTimeout(object.leaveTimerId);
+}
+
+function clearJoinTimeOut(object) {
+    clearTimeout(object.joinTimerId);
+}
+
+export function cancelPreviousTimeouts() {
+    console.log("Clearing previous timeouts.")
+    browser.storage.local.get('leaveTimerId').then(clearLeaveTimeout, getTimeFailure);
+    browser.storage.local.get('joinTimerId').then(clearJoinTimeOut, getTimeFailure);
+}
+
+export function storeTimeoutIds(joinTimerId, leaveTimerId) {
+    console.log("storing timeout ids")
+    const toStore = {joinTimerId: joinTimerId, leaveTimerId: leaveTimerId};
+    browser.storage.local.set(toStore).then(storeSucess, storeFailure);
 }
