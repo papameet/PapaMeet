@@ -2,6 +2,7 @@
 
 import {joinCall, leaveCall} from './join_leave.js';
 import {getDateObject} from './helpers.js';
+import { storeTimeoutIds, cancelPreviousTimeouts } from './storage.js';
 
 
 function setUpTimeouts(joinTime, leaveTime) {
@@ -10,8 +11,10 @@ function setUpTimeouts(joinTime, leaveTime) {
 
 	console.log('setting up timeouts', { join: joinTime, leave: leaveTime })
 
-	setTimeout(joinCall, joinTime - Date.now());
-	setTimeout(leaveCall, leaveTime - Date.now());
+	const joinTimerId = setTimeout(joinCall, joinTime - Date.now());
+	const leaveTimerId = setTimeout(leaveCall, leaveTime - Date.now());
+	cancelPreviousTimeouts();
+	storeTimeoutIds(joinTimerId, leaveTimerId);
 }
 
 (function () {
