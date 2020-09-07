@@ -1,12 +1,13 @@
 "use strict";
 
-function getJoinButton() {
+export function getJoinButton() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
         // console.log(span.textContent)
-        if (span.textContent === "Join now") //Ask to join?
+        if (span.textContent === "Join now" || span.textContent === "Ask to join")
             return span;
     }
+    return 0;
 }
 
 function getLeaveButton() {

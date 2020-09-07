@@ -15,10 +15,8 @@ export function getDateObject(timeObjectFromPicker) {
 
 export function to24hours(time) {
   let str24hr = "";
-  console.log(time)
   const hours = time.hours + (time.amOrPm === "PM" ? 12 : 0);
   const minutes = time.minutes;
   str24hr += hours + ":" + minutes;
-  console.log(str24hr);
   return str24hr;
 }

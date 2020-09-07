@@ -12972,11 +12972,9 @@ function getDateObject(timeObjectFromPicker) {
 
 function to24hours(time) {
   let str24hr = "";
-  console.log(time)
   const hours = time.hours + (time.amOrPm === "PM" ? 12 : 0);
   const minutes = time.minutes;
   str24hr += hours + ":" + minutes;
-  console.log(str24hr);
   return str24hr;
 }
 
@@ -13035,6 +13033,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+function handleJoinInfo(request, sender, sendResponse){
+  console.log(request);
+  if (!request.join) document.getElementById('join').hidden = true;
+}
 
 let joinTime, leaveTime;
 function listenForSubmit() {
@@ -13123,6 +13126,7 @@ browser.tabs
   .then(listenForSubmit)
   .catch((e) => console.error("Error occured: " + e));
 
+  browser.runtime.onMessage.addListener(handleJoinInfo)
 
 /***/ }),
 
