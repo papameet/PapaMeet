@@ -3,8 +3,8 @@
 function getJoinButton() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
-        console.log(span.textContent)
-        if (span.textContent === "Join now")
+        // console.log(span.textContent)
+        if (span.textContent === "Join now") //Ask to join?
             return span;
     }
 }

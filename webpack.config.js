@@ -5,12 +5,12 @@ module.exports = {
     main: "./src/main.js",
     content: "./src/content.js"
   },
-  mode: "production",
+  mode: "development",
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
   },
-  //devtool: 'cheap-module-source-map',
+  devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {

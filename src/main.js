@@ -69,7 +69,6 @@ function setupTimepickers() {
 
 setUpTimesFromStorage();
 setupTimepickers();
-listenForSubmit();
 
 browser.tabs
 .executeScript({ file: "/content.js" })
