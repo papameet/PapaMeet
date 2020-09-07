@@ -37,9 +37,17 @@ function setLeaveTime(time) {
   if (time.leaveTime) setTime(time.leaveTime, "leaveSpan");
 }
 
-export function setUpTimesFromStorage() {
-  browser.storage.local.get("joinTime").then(setJoinTime, getTimeFailure);
-  browser.storage.local.get("leaveTime").then(setLeaveTime, getTimeFailure);
+export async function setUpTimesFromStorage() {
+  let joinTime, leaveTime;
+  try {
+    joinTime = await browser.storage.local.get("joinTime");
+    setJoinTime(joinTime);
+    leaveTime = await browser.storage.local.get("leaveTime");
+    setLeaveTime(leaveTime);
+  } catch (e) {
+    getTimeFailure(e);
+  }
+  return { joinTime: joinTime.joinTime, leaveTime: leaveTime.leaveTime };
 }
 
 function clearLeaveTimeout(object) {
