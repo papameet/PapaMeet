@@ -126,7 +126,6 @@ function setUpTimeouts(joinTime, leaveTime) {
   browser.runtime.onMessage.addListener((message) => {
     const { joinTime, leaveTime } = message;
     setUpTimeouts(joinTime, leaveTime);
-    console.log(joinTime, leaveTime);
   });
 })();
 
@@ -137,23 +136,39 @@ function setUpTimeouts(joinTime, leaveTime) {
 /*!************************!*\
   !*** ./src/helpers.js ***!
   \************************/
-/*! exports provided: getDateObject */
+/*! exports provided: getDateObject, to24hours */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDateObject", function() { return getDateObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "to24hours", function() { return to24hours; });
+/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./storage */ "./src/storage.js");
+
+
 
 
 function getDateObject(timeObjectFromPicker) {
-    const hours = timeObjectFromPicker.hours +
-        (timeObjectFromPicker.amOrPm === "PM" ? 12 : 0);
-    const minutes = timeObjectFromPicker.minutes
+  const hours =
+    timeObjectFromPicker.hours +
+    (timeObjectFromPicker.amOrPm === "PM" ? 12 : 0);
+  const minutes = timeObjectFromPicker.minutes;
 
-    const date = new Date();
-    date.setHours(hours, minutes, 0);
-    return date;
+  const date = new Date();
+  date.setHours(hours, minutes, 0);
+  return date;
 }
+
+function to24hours(time) {
+  let str24hr = "";
+  console.log(time)
+  const hours = time.hours + (time.amOrPm === "PM" ? 12 : 0);
+  const minutes = time.minutes;
+  str24hr += hours + ":" + minutes;
+  console.log(str24hr);
+  return str24hr;
+}
+
 
 /***/ }),
 
@@ -259,9 +274,17 @@ function setLeaveTime(time) {
   if (time.leaveTime) setTime(time.leaveTime, "leaveSpan");
 }
 
-function setUpTimesFromStorage() {
-  browser.storage.local.get("joinTime").then(setJoinTime, getTimeFailure);
-  browser.storage.local.get("leaveTime").then(setLeaveTime, getTimeFailure);
+async function setUpTimesFromStorage() {
+  let joinTime, leaveTime;
+  try {
+    joinTime = await browser.storage.local.get("joinTime");
+    setJoinTime(joinTime);
+    leaveTime = await browser.storage.local.get("leaveTime");
+    setLeaveTime(leaveTime);
+  } catch (e) {
+    getTimeFailure(e);
+  }
+  return { joinTime: joinTime.joinTime, leaveTime: leaveTime.leaveTime };
 }
 
 function clearLeaveTimeout(object) {

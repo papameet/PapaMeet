@@ -26,6 +26,5 @@ function setUpTimeouts(joinTime, leaveTime) {
   browser.runtime.onMessage.addListener((message) => {
     const { joinTime, leaveTime } = message;
     setUpTimeouts(joinTime, leaveTime);
-    console.log(joinTime, leaveTime);
   });
 })();

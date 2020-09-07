@@ -12943,6 +12943,46 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/helpers.js":
+/*!************************!*\
+  !*** ./src/helpers.js ***!
+  \************************/
+/*! exports provided: getDateObject, to24hours */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDateObject", function() { return getDateObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "to24hours", function() { return to24hours; });
+/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./storage */ "./src/storage.js");
+
+
+
+
+function getDateObject(timeObjectFromPicker) {
+  const hours =
+    timeObjectFromPicker.hours +
+    (timeObjectFromPicker.amOrPm === "PM" ? 12 : 0);
+  const minutes = timeObjectFromPicker.minutes;
+
+  const date = new Date();
+  date.setHours(hours, minutes, 0);
+  return date;
+}
+
+function to24hours(time) {
+  let str24hr = "";
+  console.log(time)
+  const hours = time.hours + (time.amOrPm === "PM" ? 12 : 0);
+  const minutes = time.minutes;
+  str24hr += hours + ":" + minutes;
+  console.log(str24hr);
+  return str24hr;
+}
+
+
+/***/ }),
+
 /***/ "./src/index.css":
 /*!***********************!*\
   !*** ./src/index.css ***!
@@ -12987,7 +13027,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var materialize_css_dist_css_materialize_min_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(materialize_css_dist_css_materialize_min_css__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./index.css */ "./src/index.css");
 /* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_index_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./storage.js */ "./src/storage.js");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./helpers */ "./src/helpers.js");
+/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./storage.js */ "./src/storage.js");
+
 
 
 
@@ -13002,7 +13044,7 @@ function listenForSubmit() {
   }
   function success(e) {
     console.log("Submit success, storing times");
-    Object(_storage_js__WEBPACK_IMPORTED_MODULE_3__["saveTimesToStorage"])(joinTime, leaveTime);
+    Object(_storage_js__WEBPACK_IMPORTED_MODULE_4__["saveTimesToStorage"])(joinTime, leaveTime);
   }
   function onSubmitClick() {
     console.log("onSubmit click");
@@ -13020,9 +13062,25 @@ function listenForSubmit() {
   submit.addEventListener("click", onSubmitClick);
 }
 
-function setupTimepickers() {
+let joinInstance, leaveInstance;
+
+function setupTimepickers({
+  joinTime: joinTimeStored,
+  leaveTime: leaveTimeStored,
+}) {
+  let joinTimeStr, leaveTimeStr;
+  if (joinTimeStored) {
+    joinTime = joinTimeStored;
+    joinTimeStr = Object(_helpers__WEBPACK_IMPORTED_MODULE_3__["to24hours"])(joinTimeStored);
+  }
+  if (leaveTimeStored) {
+    leaveTime = leaveTimeStored;
+    leaveTimeStr = Object(_helpers__WEBPACK_IMPORTED_MODULE_3__["to24hours"])(leaveTimeStored);
+  }
+
   const elems = document.querySelectorAll(".timepicker");
-  const joinInstance = materialize_css__WEBPACK_IMPORTED_MODULE_0___default.a.Timepicker.init(elems[0], {
+  joinInstance = materialize_css__WEBPACK_IMPORTED_MODULE_0___default.a.Timepicker.init(elems[0], {
+    defaultTime: joinTimeStr ? joinTimeStr : new Date().toLocaleTimeString(),
     onCloseEnd() {
       joinTime = {
         hours: this.hours,
@@ -13031,14 +13089,15 @@ function setupTimepickers() {
       };
       if (this.time !== undefined) {
         elems[0].innerHTML =
-        "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
+          "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
         let span = document.getElementById("joinSpan");
         span.innerHTML = this.time + this.amOrPm;
         console.log("onClose", joinTime);
       }
     },
   });
-  const leaveInstance = materialize_css__WEBPACK_IMPORTED_MODULE_0___default.a.Timepicker.init(elems[1], {
+  leaveInstance = materialize_css__WEBPACK_IMPORTED_MODULE_0___default.a.Timepicker.init(elems[1], {
+    defaultTime: leaveTimeStr?leaveTimeStr: new Date().toLocaleTimeString(),
     onCloseEnd() {
       leaveTime = {
         hours: this.hours,
@@ -13047,7 +13106,7 @@ function setupTimepickers() {
       };
       if (this.time !== undefined) {
         elems[1].innerHTML =
-        "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
+          "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
         let span = document.getElementById("leaveSpan");
         span.innerHTML = span.innerHTML = this.time + this.amOrPm;
         console.log("onClose", leaveTime);
@@ -13057,13 +13116,12 @@ function setupTimepickers() {
   // todo: rewrite these functions
 }
 
-Object(_storage_js__WEBPACK_IMPORTED_MODULE_3__["setUpTimesFromStorage"])();
-setupTimepickers();
+Object(_storage_js__WEBPACK_IMPORTED_MODULE_4__["setUpTimesFromStorage"])().then(setupTimepickers);
 
 browser.tabs
-.executeScript({ file: "/content.js" })
-.then(listenForSubmit)
-.catch((e) => console.error("Error occured: " + e));
+  .executeScript({ file: "/content.js" })
+  .then(listenForSubmit)
+  .catch((e) => console.error("Error occured: " + e));
 
 
 /***/ }),
@@ -13120,9 +13178,17 @@ function setLeaveTime(time) {
   if (time.leaveTime) setTime(time.leaveTime, "leaveSpan");
 }
 
-function setUpTimesFromStorage() {
-  browser.storage.local.get("joinTime").then(setJoinTime, getTimeFailure);
-  browser.storage.local.get("leaveTime").then(setLeaveTime, getTimeFailure);
+async function setUpTimesFromStorage() {
+  let joinTime, leaveTime;
+  try {
+    joinTime = await browser.storage.local.get("joinTime");
+    setJoinTime(joinTime);
+    leaveTime = await browser.storage.local.get("leaveTime");
+    setLeaveTime(leaveTime);
+  } catch (e) {
+    getTimeFailure(e);
+  }
+  return { joinTime: joinTime.joinTime, leaveTime: leaveTime.leaveTime };
 }
 
 function clearLeaveTimeout(object) {

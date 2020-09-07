@@ -1,8 +1,9 @@
-import M from "materialize-css"
+import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 import "./index.css";
-import {saveTimesToStorage, setUpTimesFromStorage} from "./storage.js";
+import { to24hours } from "./helpers";
 
+import { saveTimesToStorage, setUpTimesFromStorage } from "./storage.js";
 
 let joinTime, leaveTime;
 function listenForSubmit() {
@@ -30,9 +31,25 @@ function listenForSubmit() {
   submit.addEventListener("click", onSubmitClick);
 }
 
-function setupTimepickers() {
+let joinInstance, leaveInstance;
+
+function setupTimepickers({
+  joinTime: joinTimeStored,
+  leaveTime: leaveTimeStored,
+}) {
+  let joinTimeStr, leaveTimeStr;
+  if (joinTimeStored) {
+    joinTime = joinTimeStored;
+    joinTimeStr = to24hours(joinTimeStored);
+  }
+  if (leaveTimeStored) {
+    leaveTime = leaveTimeStored;
+    leaveTimeStr = to24hours(leaveTimeStored);
+  }
+
   const elems = document.querySelectorAll(".timepicker");
-  const joinInstance = M.Timepicker.init(elems[0], {
+  joinInstance = M.Timepicker.init(elems[0], {
+    defaultTime: joinTimeStr ? joinTimeStr : new Date().toLocaleTimeString(),
     onCloseEnd() {
       joinTime = {
         hours: this.hours,
@@ -41,14 +58,15 @@ function setupTimepickers() {
       };
       if (this.time !== undefined) {
         elems[0].innerHTML =
-        "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
+          "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
         let span = document.getElementById("joinSpan");
         span.innerHTML = this.time + this.amOrPm;
         console.log("onClose", joinTime);
       }
     },
   });
-  const leaveInstance = M.Timepicker.init(elems[1], {
+  leaveInstance = M.Timepicker.init(elems[1], {
+    defaultTime: leaveTimeStr?leaveTimeStr: new Date().toLocaleTimeString(),
     onCloseEnd() {
       leaveTime = {
         hours: this.hours,
@@ -57,7 +75,7 @@ function setupTimepickers() {
       };
       if (this.time !== undefined) {
         elems[1].innerHTML =
-        "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
+          "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
         let span = document.getElementById("leaveSpan");
         span.innerHTML = span.innerHTML = this.time + this.amOrPm;
         console.log("onClose", leaveTime);
@@ -67,10 +85,9 @@ function setupTimepickers() {
   // todo: rewrite these functions
 }
 
-setUpTimesFromStorage();
-setupTimepickers();
+setUpTimesFromStorage().then(setupTimepickers);
 
 browser.tabs
-.executeScript({ file: "/content.js" })
-.then(listenForSubmit)
-.catch((e) => console.error("Error occured: " + e));
+  .executeScript({ file: "/content.js" })
+  .then(listenForSubmit)
+  .catch((e) => console.error("Error occured: " + e));
