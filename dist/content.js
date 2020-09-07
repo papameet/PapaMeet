@@ -105,18 +105,32 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function setUpTimeouts(joinTime, leaveTime) {
-  joinTime = Object(_helpers_js__WEBPACK_IMPORTED_MODULE_1__["getDateObject"])(joinTime);
+	if(joinTime) joinTime = Object(_helpers_js__WEBPACK_IMPORTED_MODULE_1__["getDateObject"])(joinTime);
   leaveTime = Object(_helpers_js__WEBPACK_IMPORTED_MODULE_1__["getDateObject"])(leaveTime);
 
   console.log("setting up timeouts", { join: joinTime, leave: leaveTime });
 
-  const joinTimerId = setTimeout(_join_leave_js__WEBPACK_IMPORTED_MODULE_0__["joinCall"], joinTime - Date.now());
+  const joinTimerId = joinTime ? setTimeout(_join_leave_js__WEBPACK_IMPORTED_MODULE_0__["joinCall"], joinTime - Date.now()) : 0;
   const leaveTimerId = setTimeout(_join_leave_js__WEBPACK_IMPORTED_MODULE_0__["leaveCall"], leaveTime - Date.now());
   Object(_storage_js__WEBPACK_IMPORTED_MODULE_2__["cancelPreviousTimeouts"])();
   Object(_storage_js__WEBPACK_IMPORTED_MODULE_2__["storeTimeoutIds"])(joinTimerId, leaveTimerId);
 }
 
+function sendJoinInfo(e) {
+  let joinBtn = Object(_join_leave_js__WEBPACK_IMPORTED_MODULE_0__["getJoinButton"])();
+  var sending = browser.runtime.sendMessage({
+    join: !!joinBtn ? true : false,
+  });
+  sending.then(
+    (respone) => {
+      console.log('sent join info');
+    },
+    (e) => console.error(e)
+  );
+}
+
 (function () {
+  sendJoinInfo();
   if (window.hasRun) {
     return;
   }
@@ -161,11 +175,9 @@ function getDateObject(timeObjectFromPicker) {
 
 function to24hours(time) {
   let str24hr = "";
-  console.log(time)
   const hours = time.hours + (time.amOrPm === "PM" ? 12 : 0);
   const minutes = time.minutes;
   str24hr += hours + ":" + minutes;
-  console.log(str24hr);
   return str24hr;
 }
 
@@ -176,11 +188,12 @@ function to24hours(time) {
 /*!***************************!*\
   !*** ./src/join_leave.js ***!
   \***************************/
-/*! exports provided: leaveCall, joinCall */
+/*! exports provided: getJoinButton, leaveCall, joinCall */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getJoinButton", function() { return getJoinButton; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "leaveCall", function() { return leaveCall; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "joinCall", function() { return joinCall; });
 
@@ -189,9 +202,10 @@ function getJoinButton() {
     const spans = document.getElementsByTagName('span');
     for (let span of spans) {
         // console.log(span.textContent)
-        if (span.textContent === "Join now") //Ask to join?
+        if (span.textContent === "Join now" || span.textContent === "Ask to join")
             return span;
     }
+    return 0;
 }
 
 function getLeaveButton() {

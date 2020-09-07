@@ -5,6 +5,11 @@ import { to24hours } from "./helpers";
 
 import { saveTimesToStorage, setUpTimesFromStorage } from "./storage.js";
 
+function handleJoinInfo(request, sender, sendResponse){
+  console.log(request);
+  if (!request.join) document.getElementById('join').hidden = true;
+}
+
 let joinTime, leaveTime;
 function listenForSubmit() {
   console.log("listen");
@@ -91,3 +96,5 @@ browser.tabs
   .executeScript({ file: "/content.js" })
   .then(listenForSubmit)
   .catch((e) => console.error("Error occured: " + e));
+
+  browser.runtime.onMessage.addListener(handleJoinInfo)
