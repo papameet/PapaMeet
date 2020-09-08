@@ -1,6 +1,6 @@
 "use strict";
 
-import { joinCall, leaveCall, getJoinButton } from "./join_leave.js";
+import { joinCall, leaveCall, getJoinButton, leaveWhenPeopleLessThan } from "./page.js";
 import { getDateObject } from "./helpers.js";
 import { storeTimeoutIds, cancelPreviousTimeouts } from "./storage.js";
 
@@ -38,7 +38,8 @@ function sendJoinInfo(e) {
 
   console.log("contentscript");
   browser.runtime.onMessage.addListener((message) => {
-    const { joinTime, leaveTime } = message;
-    setUpTimeouts(joinTime, leaveTime);
+	  const { joinTime, leaveTime } = message;
+	  setUpTimeouts(joinTime, leaveTime);
+	  leaveWhenPeopleLessThan();
   });
 })();

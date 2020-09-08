@@ -2,6 +2,7 @@ import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 import "./index.css";
 import { to24hours } from "./helpers";
+import "./checkbox.js"
 
 import { saveTimesToStorage, setUpTimesFromStorage } from "./storage.js";
 

@@ -84,3 +84,32 @@ button:focus {
     position: absolute;
     left: 140px;
 }
+
+#checkbox{
+  padding-top: 30px;
+}
+
+#checkbox label{
+  font-size: 1.4rem;
+}
+
+#checkbox [type="checkbox"] {
+  position: relative;
+  opacity: 100;
+  pointer-events: auto;
+}
+
+#leave {
+  display: none;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+
+    position: relative;
+    width: 20px;
+}

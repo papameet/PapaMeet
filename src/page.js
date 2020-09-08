@@ -34,3 +34,23 @@ export function joinCall() {
         console.error("join button not found")
     }
 }
+
+function getPeopleCount() {
+	return parseInt(document.querySelector("span.wnPUne.N0PJ8e").innerHTML);
+}
+
+export let leaveTimeoutId;
+
+export function leaveWhenPeopleLessThan(count = 10) {
+	leaveTimeoutId = setTimeout(function run(count){
+		console.log("leave run");
+		let people_count_now = getPeopleCount();
+		if (count > people_count_now) {
+			console.log("leaving now. people count:", people_count_now)
+			leaveCall()
+			clearTimeout(leaveTimeoutId);
+		} else {
+			leaveTimeoutId = setTimeout(run, 10, count);
+		}
+	}, 10, count)
+}
