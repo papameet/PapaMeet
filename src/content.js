@@ -1,12 +1,10 @@
-"use strict";
-
-import { joinCall, getJoinButton, leaveWhenPeopleLessThan } from "./page.js";
-import { getDateObject } from "./helpers.js";
-import { storeTimeoutIds, cancelPreviousTimeouts } from "./storage.js";
+import { joinCall, getJoinButton, leaveWhenPeopleLessThan } from "./page";
+import { getDateObject } from "./helpers";
+import { storeTimeoutIds, cancelPreviousTimeouts } from "./storage";
 
 function setUpTimeouts(state) {
-  const joinTime = state.joinTime;
-  const joinTimeDateObj = getDateObject(joinTime);
+  const { joinTime } = state,
+    joinTimeDateObj = getDateObject(joinTime);
 
   console.log("setting up timeouts", { join: joinTimeDateObj });
 
@@ -27,24 +25,22 @@ function setUpTimeouts(state) {
         state.joinTimerId = 0;
       });
   } else {
-    {
       state.joinTimerId = 0;
-    }
   }
   cancelPreviousTimeouts();
   storeTimeoutIds(state.joinTimerId);
 }
 
 function sendJoinInfo(e) {
-  let joinBtn = getJoinButton();
-  var sending = browser.runtime.sendMessage({
-    join: !!joinBtn ? true : false,
-  });
+  const joinBtn = getJoinButton(),
+    sending = browser.runtime.sendMessage({
+      join: !!joinBtn,
+    });
   sending.then(
     (respone) => {
       console.log("sent join info");
     },
-    (e) => console.error(e)
+    (err) => console.error(err)
   );
 }
 
@@ -97,14 +93,14 @@ function sendJoinInfo(e) {
     state.leaveInitId = 0;
     state.leaveTimerOn = false;
     storeTimeoutIds(0);
-    console.log('All timeouts cleared')
+    console.log("All timeouts cleared");
   }
 
   browser.runtime.onMessage.addListener((recievedObj, sender, sendResponse) => {
     const { message, state: recievedState } = recievedObj;
     console.log("hi");
     updateState(recievedState);
-    console.log("message recieved in content:",message);
+    console.log("message recieved in content:", message);
     switch (message) {
       case "submit":
         onSubmit();
