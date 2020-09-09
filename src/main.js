@@ -4,14 +4,14 @@ import "./index.css";
 import { to24hours } from "./helpers";
 import "./checkbox.js"
 
-import { saveTimesToStorage, setUpTimesFromStorage } from "./storage.js";
+import { saveJoinTimeToStorage, setUpTimesFromStorage } from "./storage.js";
 
 function handleJoinInfo(request, sender, sendResponse){
   console.log(request);
-  if (!request.join) document.getElementById('join').hidden = true;
+  if (!request.join) document.getElementById('join').disabled = true;
 }
 
-let joinTime, leaveTime;
+let joinTime;
 function listenForSubmit() {
   console.log("listen");
   function catchError(e) {
@@ -19,7 +19,7 @@ function listenForSubmit() {
   }
   function success(e) {
     console.log("Submit success, storing times");
-    saveTimesToStorage(joinTime, leaveTime);
+    saveJoinTimeToStorage(joinTime);
   }
   function onSubmitClick() {
     console.log("onSubmit click");
@@ -27,7 +27,6 @@ function listenForSubmit() {
       browser.tabs
         .sendMessage(tabs[0].id, {
           joinTime,
-          leaveTime,
         })
         .then(success)
         .catch(catchError);
@@ -37,20 +36,15 @@ function listenForSubmit() {
   submit.addEventListener("click", onSubmitClick);
 }
 
-let joinInstance, leaveInstance;
+let joinInstance;
 
 function setupTimepickers({
   joinTime: joinTimeStored,
-  leaveTime: leaveTimeStored,
 }) {
-  let joinTimeStr, leaveTimeStr;
+  let joinTimeStr;
   if (joinTimeStored) {
     joinTime = joinTimeStored;
     joinTimeStr = to24hours(joinTimeStored);
-  }
-  if (leaveTimeStored) {
-    leaveTime = leaveTimeStored;
-    leaveTimeStr = to24hours(leaveTimeStored);
   }
 
   const elems = document.querySelectorAll(".timepicker");
@@ -71,23 +65,6 @@ function setupTimepickers({
       }
     },
   });
-  leaveInstance = M.Timepicker.init(elems[1], {
-    defaultTime: leaveTimeStr?leaveTimeStr: new Date().toLocaleTimeString(),
-    onCloseEnd() {
-      leaveTime = {
-        hours: this.hours,
-        minutes: this.minutes,
-        amOrPm: this.amOrPm,
-      };
-      if (this.time !== undefined) {
-        elems[1].innerHTML =
-          "<div id='textContainer'><div class='left'>Leave:</div><div id='leaveSpan' class='right'></div></div>";
-        let span = document.getElementById("leaveSpan");
-        span.innerHTML = span.innerHTML = this.time + this.amOrPm;
-        console.log("onClose", leaveTime);
-      }
-    },
-  });
   // todo: rewrite these functions
 }
 
@@ -98,4 +75,4 @@ browser.tabs
   .then(listenForSubmit)
   .catch((e) => console.error("Error occured: " + e));
 
-  browser.runtime.onMessage.addListener(handleJoinInfo)
+browser.runtime.onMessage.addListener(handleJoinInfo)
