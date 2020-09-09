@@ -41,16 +41,19 @@ function getPeopleCount() {
 
 export let leaveTimeoutId;
 
-export function leaveWhenPeopleLessThan(count = 10) {
-	leaveTimeoutId = setTimeout(function run(count){
-		console.log("leave run");
+export function leaveWhenPeopleLessThan(count) {
+    clearTimeout(leaveTimeoutId);
+	function run(count){
+        console.log("leave run");
 		let people_count_now = getPeopleCount();
 		if (count > people_count_now) {
-			console.log("leaving now. people count:", people_count_now)
+            console.log("leaving now. people count:", people_count_now)
 			leaveCall()
 			clearTimeout(leaveTimeoutId);
 		} else {
-			leaveTimeoutId = setTimeout(run, 10, count);
+            leaveTimeoutId = setTimeout(run, 1000, count);
 		}
-	}, 10, count)
+    };
+    if (getPeopleCount() > count)
+        run(count);
 }

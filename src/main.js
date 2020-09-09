@@ -23,10 +23,12 @@ function listenForSubmit() {
   }
   function onSubmitClick() {
     console.log("onSubmit click");
+    let leaveThreshold = parseInt(document.getElementById("leave_threshold").value);
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
         .sendMessage(tabs[0].id, {
           joinTime,
+          leaveThreshold,
         })
         .then(success)
         .catch(catchError);

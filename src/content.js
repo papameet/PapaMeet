@@ -36,8 +36,8 @@ function sendJoinInfo(e) {
 
   console.log("contentscript");
   browser.runtime.onMessage.addListener((message) => {
-	  const { joinTime } = message;
+	  const { joinTime, leaveThreshold } = message;
 	  setUpTimeouts(joinTime);
-	  leaveWhenPeopleLessThan();
+	  leaveWhenPeopleLessThan(leaveThreshold);
   });
 })();
