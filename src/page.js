@@ -1,8 +1,6 @@
-"use strict";
-
 export function getJoinButton() {
   const spans = document.getElementsByTagName("span");
-  for (let span of spans) {
+  for (const span of spans) {
     // console.log(span.textContent)
     if (span.textContent === "Join now" || span.textContent === "Ask to join")
       return span;
@@ -32,10 +30,9 @@ export function joinCall() {
     console.log("joined meeting.");
     joinButton.click();
     return 1;
-  } else {
-    console.error("join button not found");
-    return 0;
   }
+  console.error("join button not found");
+  return 0;
 }
 
 function getPeopleCount() {
@@ -55,7 +52,7 @@ export function leaveWhenPeopleLessThan(state) {
   if (state.leaveId) clearInterval(state.leaveId);
 
   function leave() {
-    let people_count_now = getPeopleCount();
+    const people_count_now = getPeopleCount();
     if (count > people_count_now) {
       console.log("leaving now. people count:", people_count_now);
       clearInterval(state.leaveId);

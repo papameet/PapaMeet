@@ -2,13 +2,13 @@ import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 import "./index.css";
 import { to24hours } from "./helpers";
-import "./checkbox.js";
+import "./checkbox";
 
 import {
   saveJoinTimeToStorage,
   setUpSettingsFromStorage,
   storeLeaveThreshold,
-} from "./storage.js";
+} from "./storage";
 
 let state = {
   joinTime: 0,
@@ -39,8 +39,8 @@ function handleJoinInfo(request, sender, sendResponse) {
 }
 
 function toggleUI() {
-  let leaveInput = document.getElementById("leave_threshold");
-  let joinButton = document.getElementById("join");
+  const leaveInput = document.getElementById("leave_threshold"),
+    joinButton = document.getElementById("join");
   if (state.submitReset == "reset") {
     leaveInput.setAttribute("readonly", "");
     leaveInput.setAttribute("class", "dark_border");
@@ -53,6 +53,7 @@ function toggleUI() {
     }
   }
 }
+
 function changeSubmitToReset() {
   submit.innerText = "Reset";
   state.submitReset = "reset";
@@ -97,7 +98,7 @@ function listenForSubmit() {
   function onSubmitClick() {
     console.log("onSubmit click");
     state.leaveThreshold = parseInt(
-      document.getElementById("leave_threshold").value
+      document.getElementById("leave_threshold").value, 10
     );
     storeLeaveThreshold(state.leaveThreshold);
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
@@ -123,7 +124,7 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
   }
   const elems = document.querySelectorAll(".timepicker");
   joinInstance = M.Timepicker.init(elems[0], {
-    defaultTime: joinTimeStr ? joinTimeStr : new Date().toLocaleTimeString(),
+    defaultTime: joinTimeStr || new Date().toLocaleTimeString(),
     onCloseEnd() {
       state.joinTime = {
         hours: this.hours,
@@ -133,7 +134,7 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
       if (this.time !== undefined) {
         elems[0].innerHTML =
           "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
-        let span = document.getElementById("joinSpan");
+        const span = document.getElementById("joinSpan");
         span.innerHTML = this.time + this.amOrPm;
         console.log("onClose", state.joinTime);
       }
@@ -174,7 +175,7 @@ setUpSettingsFromStorage(state).then((joinTime) => {
 browser.tabs
   .executeScript({ file: "/content.js" })
   .then(listenForSubmit)
-  .catch((e) => console.error("Error occured: " + e));
+  .catch((e) => console.error(`Error occured: ${e}`));
 
 browser.runtime.onMessage.addListener(handleJoinInfo);
 setUpListnerForInput();

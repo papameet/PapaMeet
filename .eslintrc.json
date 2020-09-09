@@ -1,0 +1,25 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "webextensions": true
+    },
+    "extends": [
+        "airbnb-base",
+        "prettier",
+        "eslint:recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": ["prettier"],
+    "rules":{
+        "prettier/prettier": ["warn"],
+        "one-var": ["warn", "consecutive"],
+        "no-unused-vars": "warn",
+        "no-console": "warn",
+        "no-restricted-syntax": "warn",
+        "func-names":"off"
+    }
+}
