@@ -22,13 +22,23 @@ function setJoinTime(time) {
   span.innerHTML = `${time.hours}:${time.minutes}${time.amOrPm}`;
 }
 
-export async function setUpTimesFromStorage() {
+function setLeaveThreshold(threshold) {
+  const leaveThreshold = document.getElementById("leave_threshold");
+  leaveThreshold.value = threshold;
+}
+
+export async function setUpSettingsFromStorage() {
   let joinTime;
   try {
     joinTime = await browser.storage.local.get("joinTime");
     console.log('join', joinTime);
     if (Object.keys(joinTime).length !== 0)
       setJoinTime(joinTime);
+
+    let leaveThreshold = (await browser.storage.local.get("leaveThreshold")).leaveThreshold;
+    if (leaveThreshold)
+      setLeaveThreshold(leaveThreshold);
+
   } catch (e) {
     getTimeFailure(e);
   }
@@ -49,4 +59,8 @@ export function cancelPreviousTimeouts() {
 export function storeTimeoutIds(joinTimerId) {
   console.log("storing timeout ids");
   browser.storage.local.set({joinTimerId}).then(storeSucess, storeFailure);
+}
+
+export function storeLeaveThreshold(leaveThreshold) {
+  browser.storage.local.set({leaveThreshold}).then(storeSucess, storeFailure);
 }

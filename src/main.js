@@ -4,7 +4,7 @@ import "./index.css";
 import { to24hours } from "./helpers";
 import "./checkbox.js"
 
-import { saveJoinTimeToStorage, setUpTimesFromStorage } from "./storage.js";
+import { saveJoinTimeToStorage, setUpSettingsFromStorage, storeLeaveThreshold } from "./storage.js";
 
 function handleJoinInfo(request, sender, sendResponse){
   console.log(request);
@@ -24,6 +24,7 @@ function listenForSubmit() {
   function onSubmitClick() {
     console.log("onSubmit click");
     let leaveThreshold = parseInt(document.getElementById("leave_threshold").value);
+    storeLeaveThreshold(leaveThreshold);
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
         .sendMessage(tabs[0].id, {
@@ -70,7 +71,7 @@ function setupTimepickers({
   // todo: rewrite these functions
 }
 
-setUpTimesFromStorage().then(setupTimepickers);
+setUpSettingsFromStorage().then(setupTimepickers);
 
 browser.tabs
   .executeScript({ file: "/content.js" })
