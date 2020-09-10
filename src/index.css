@@ -104,8 +104,18 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    margin: 0;
+    margin: 0; 
+}
 
-    position: relative;
-    width: 20px;
+input[type=number] {
+  -moz-appearance: textfield !important;
+}
+
+#leave_text{
+  font-size: 1rem;
+}
+
+#leave_threshold{
+  width: 2rem;
+  height: revert;
 }

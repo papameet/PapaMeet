@@ -6,14 +6,18 @@
 
   <body>
     <header>
-      <h1 id='heading'>AutoMeet</h1>
+      <h1 id="heading">AutoMeet</h1>
     </header>
     <div id="buttons-div">
       <button id="join" class="timepicker">Join Time</button>
+      <div id="leave">
+        <h3 id='leave_text'>
+          Leave when less than
+          <span><input type="number" value="10" id="leave_threshold" /></span> people are
+          present.
+        </h3>
+      </div>
       <button id="submit">Submit</button>
-    <div id="checkbox">
-      <label for="leave_checkbox">Leave when less than <input type="number" value=10 id="leave_threshold"> people are present.</label>
-    </div>
     </div>
     <script src="./main.js"></script>
   </body>
