@@ -7,7 +7,7 @@ function storeFailure(e) {
 }
 
 export function saveJoinTimeToStorage(joinTime) {
-  browser.storage.local.set({joinTime}).then(storeSucess, storeFailure);
+  browser.storage.local.set({ joinTime }).then(storeSucess, storeFailure);
 }
 
 function getTimeFailure(e) {
@@ -18,7 +18,7 @@ function setJoinTime(time) {
   time = time.joinTime;
   const elem = document.querySelector(".timepicker");
   elem.innerHTML = `<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>`;
-  const span = document.getElementById('joinSpan');
+  const span = document.getElementById("joinSpan");
   span.innerHTML = `${time.hours}:${time.minutes}${time.amOrPm}`;
 }
 
@@ -27,18 +27,18 @@ function setLeaveThreshold(threshold) {
   leaveThreshold.value = threshold;
 }
 
-export async function setUpSettingsFromStorage() {
+export async function setUpSettingsFromStorage(state) {
   let joinTime;
   try {
     joinTime = await browser.storage.local.get("joinTime");
-    console.log('join', joinTime);
-    if (Object.keys(joinTime).length !== 0)
+    console.log("join", joinTime);
+    if (Object.keys(joinTime).length !== 0 && joinTime.joinTime) {
+      console.log("in object");
       setJoinTime(joinTime);
-
-    let leaveThreshold = (await browser.storage.local.get("leaveThreshold")).leaveThreshold;
-    if (leaveThreshold)
-      setLeaveThreshold(leaveThreshold);
-
+    }
+    let leaveThreshold = (await browser.storage.local.get("leaveThreshold"))
+      .leaveThreshold;
+    if (leaveThreshold) setLeaveThreshold(leaveThreshold);
   } catch (e) {
     getTimeFailure(e);
   }
@@ -58,9 +58,9 @@ export function cancelPreviousTimeouts() {
 
 export function storeTimeoutIds(joinTimerId) {
   console.log("storing timeout ids");
-  browser.storage.local.set({joinTimerId}).then(storeSucess, storeFailure);
+  browser.storage.local.set({ joinTimerId }).then(storeSucess, storeFailure);
 }
 
 export function storeLeaveThreshold(leaveThreshold) {
-  browser.storage.local.set({leaveThreshold}).then(storeSucess, storeFailure);
+  browser.storage.local.set({ leaveThreshold }).then(storeSucess, storeFailure);
 }
