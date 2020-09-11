@@ -2,35 +2,50 @@ import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 import "./index.css";
 import { to24hours } from "./helpers";
-import "./checkbox.js"
+import "./checkbox.js";
 
-import { saveJoinTimeToStorage, setUpSettingsFromStorage, storeLeaveThreshold } from "./storage.js";
+import {
+  saveJoinTimeToStorage,
+  setUpSettingsFromStorage,
+  storeLeaveThreshold,
+} from "./storage.js";
 
-function handleJoinInfo(request, sender, sendResponse){
+let state = {
+  joinTime: 0,
+  leaveThreshold: 0,
+  canJoin: true,
+  joinTimerOn: false,
+  leaveTimerOn: false,
+};
+
+function handleJoinInfo(request, sender, sendResponse) {
   console.log(request);
-  if (!request.join) document.getElementById('join').disabled = true;
+  if (!request.join) {
+    document.getElementById("join").disabled = true;
+    state.canJoin = false;
+  }
 }
 
-let joinTime;
 function listenForSubmit() {
   console.log("listen");
   function catchError(e) {
     console.log(e);
   }
-  function success(e) {
+  function success(recievedState) {
     console.log("Submit success, storing times");
-    saveJoinTimeToStorage(joinTime);
+    state = recievedState;
+    console.log(state);
+    saveJoinTimeToStorage(state.joinTime);
   }
   function onSubmitClick() {
     console.log("onSubmit click");
-    let leaveThreshold = parseInt(document.getElementById("leave_threshold").value);
-    storeLeaveThreshold(leaveThreshold);
+    state.leaveThreshold = parseInt(
+      document.getElementById("leave_threshold").value
+    );
+    storeLeaveThreshold(state.leaveThreshold);
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
-        .sendMessage(tabs[0].id, {
-          joinTime,
-          leaveThreshold,
-        })
+        .sendMessage(tabs[0].id, { message: "submit", state })
         .then(success)
         .catch(catchError);
     });
@@ -41,12 +56,10 @@ function listenForSubmit() {
 
 let joinInstance;
 
-function setupTimepickers({
-  joinTime: joinTimeStored,
-}) {
+function setupTimepickers({ joinTime: joinTimeStored }) {
   let joinTimeStr;
   if (joinTimeStored) {
-    joinTime = joinTimeStored;
+    state.joinTime = joinTimeStored;
     joinTimeStr = to24hours(joinTimeStored);
   }
 
@@ -54,7 +67,7 @@ function setupTimepickers({
   joinInstance = M.Timepicker.init(elems[0], {
     defaultTime: joinTimeStr ? joinTimeStr : new Date().toLocaleTimeString(),
     onCloseEnd() {
-      joinTime = {
+      state.joinTime = {
         hours: this.hours,
         minutes: this.minutes,
         amOrPm: this.amOrPm,
@@ -64,18 +77,29 @@ function setupTimepickers({
           "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
         let span = document.getElementById("joinSpan");
         span.innerHTML = this.time + this.amOrPm;
-        console.log("onClose", joinTime);
+        console.log("onClose", state.joinTime);
       }
     },
   });
   // todo: rewrite these functions
 }
 
-setUpSettingsFromStorage().then(setupTimepickers);
+function updateState(recievedState) {
+  state = recievedState;
+}
+
+setUpSettingsFromStorage(state).then(setupTimepickers);
 
 browser.tabs
   .executeScript({ file: "/content.js" })
-  .then(listenForSubmit)
+  .then((e) => console.log(e))
   .catch((e) => console.error("Error occured: " + e));
 
-browser.runtime.onMessage.addListener(handleJoinInfo)
+browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+  browser.tabs
+    .sendMessage(tabs[0].id, { message: "sendState", state })
+    .then(updateState)
+    .catch((e)=>console.error(e));
+});
+
+browser.runtime.onMessage.addListener(handleJoinInfo);
