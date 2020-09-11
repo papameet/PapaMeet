@@ -50,7 +50,6 @@ function sendJoinInfo(e) {
   sendJoinInfo();
 
   if (window.hasRun) {
-    updateState(state, recievedState);
     return;
   }
   window.hasRun = true;
@@ -63,7 +62,6 @@ function sendJoinInfo(e) {
     canJoin: true,
     joinTimerOn: false,
     leaveTimerOn: false,
-    hola: 'ji'
   };
 
   function updateState(recievedState) {
@@ -77,11 +75,12 @@ function sendJoinInfo(e) {
 
   function onSubmit() {
     if (state.joinTime) setUpTimeouts(state);
-    leaveWhenPeopleLessThan(leaveThreshold);
+    leaveWhenPeopleLessThan(state.leaveThreshold);
   }
 
   browser.runtime.onMessage.addListener((recievedObj, sender, sendResponse) => {
     const { message, state: recievedState } = recievedObj;
+    console.log('hi')
     updateState(recievedState);
     switch (message) {
       case "submit":
@@ -92,9 +91,7 @@ function sendJoinInfo(e) {
       default:
         console.log("message did not match");
     }
-
     console.log("content", state);
     return Promise.resolve(state);
   });
 })();
-
