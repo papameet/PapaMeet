@@ -88,18 +88,19 @@ function updateState(recievedState) {
   state = recievedState;
 }
 
-setUpSettingsFromStorage(state).then(setupTimepickers);
+setUpSettingsFromStorage(state).then(() => {
+  setupTimepickers();
+  browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+    browser.tabs
+      .sendMessage(tabs[0].id, { message: "sendState", state })
+      .then(updateState)
+      .catch((e) => console.error(e));
+  });
+});
 
 browser.tabs
   .executeScript({ file: "/content.js" })
-  .then((e) => console.log(e))
+  .then(listenForSubmit)
   .catch((e) => console.error("Error occured: " + e));
-
-browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-  browser.tabs
-    .sendMessage(tabs[0].id, { message: "sendState", state })
-    .then(updateState)
-    .catch((e)=>console.error(e));
-});
 
 browser.runtime.onMessage.addListener(handleJoinInfo);
