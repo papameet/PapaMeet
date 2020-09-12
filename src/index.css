@@ -2,14 +2,14 @@
   box-sizing: border-box;
 }
 
-header{
-	height: 104px;
-	width: 300px;
-	background-color: #26a69a;
-	color: white;
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
+header {
+  height: 104px;
+  width: 300px;
+  background-color: #26a69a;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 #heading {
   margin: 0;
@@ -41,6 +41,17 @@ body {
   position: relative;
 }
 
+#submit{
+  transition: background-color 0.1s linear;
+  color: white;
+  background-color: #2672A6;
+  font-size: 1.2rem;
+}
+#submit:hover{
+  background-color: #123f9445;
+  color: black;
+}
+
 button {
   margin-top: 1rem;
   min-height: 2.5rem;
@@ -61,7 +72,7 @@ button:hover {
 
 button:focus {
   border-width: 1px;
-  border-color:#26a69a; 
+  border-color: #26a69a;
   border-style: solid;
   color: white;
 }
@@ -72,24 +83,24 @@ button:focus {
   position: absolute;
   padding-right: 10px;
 }
-#textContainer{
-    display: flex;
-    align-items: center;
+#textContainer {
+  display: flex;
+  align-items: center;
 }
-.left{
-    position: absolute;
-    right: 180px;
+.left {
+  position: absolute;
+  right: 180px;
 }
-.right{
-    position: absolute;
-    left: 140px;
+.right {
+  position: absolute;
+  left: 140px;
 }
 
-#checkbox{
+#checkbox {
   padding-top: 30px;
 }
 
-#checkbox label{
+#checkbox label {
   font-size: 1.4rem;
 }
 
@@ -99,23 +110,33 @@ button:focus {
   pointer-events: auto;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0; 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield !important;
 }
 
-#leave_text{
+#leave_text {
   font-size: 1rem;
+  color: #695f5f;
 }
-
-#leave_threshold{
+[disabled] {
+  cursor: not-allowed;
+}
+#leave_threshold {
   width: 2rem;
   height: revert;
+  transition: border 0.2s linear;
+  text-align: center;
+}
+.dark_border{
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-color: #9f9f9f  !important;
 }

@@ -6,7 +6,7 @@ import { storeTimeoutIds, cancelPreviousTimeouts } from "./storage.js";
 
 function setUpTimeouts(state) {
   const joinTime = state.joinTime;
-  joinTimeDateObj = getDateObject(joinTime);
+  const joinTimeDateObj = getDateObject(joinTime);
 
   console.log("setting up timeouts", { join: joinTimeDateObj });
 
@@ -19,10 +19,12 @@ function setUpTimeouts(state) {
     })
       .then((success) => {
         state.joinTimerOn = false;
+        state.joinTimerId = 0;
       })
       .catch((e) => {
         console.log(e);
         state.joinTimerOn = false;
+        state.joinTimerId = 0;
       });
   } else {
     {
@@ -62,6 +64,10 @@ function sendJoinInfo(e) {
     canJoin: true,
     joinTimerOn: false,
     leaveTimerOn: false,
+    joinTimerId: 0,
+    leaveId: 0,
+    leaveInitId: 0,
+    submitReset: "submit",
   };
 
   function updateState(recievedState) {
@@ -70,26 +76,46 @@ function sendJoinInfo(e) {
       joinTime: recievedState.joinTime,
       leaveThreshold: recievedState.leaveThreshold,
       canJoin: !!getJoinButton(),
+      submitReset: recievedState.submitReset,
     };
   }
 
   function onSubmit() {
     if (state.joinTime) setUpTimeouts(state);
-    leaveWhenPeopleLessThan(state.leaveThreshold);
+    leaveWhenPeopleLessThan(state);
+  }
+
+  function clearAllTimeouts() {
+    if (state.joinTimerOn) {
+      clearTimeout(state.joinTimerId);
+      state.joinTimerOn = false;
+      state.joinTimerId = 0;
+    }
+    clearInterval(state.leaveInitId);
+    clearInterval(state.leaveId);
+    state.leaveId = 0;
+    state.leaveInitId = 0;
+    state.leaveTimerOn = false;
+    storeTimeoutIds(0);
+    console.log('All timeouts cleared')
   }
 
   browser.runtime.onMessage.addListener((recievedObj, sender, sendResponse) => {
     const { message, state: recievedState } = recievedObj;
-    console.log('hi')
+    console.log("hi");
     updateState(recievedState);
+    console.log("message recieved in content:",message);
     switch (message) {
       case "submit":
         onSubmit();
         break;
       case "sendState":
         break;
+      case "clearAllTimeouts":
+        clearAllTimeouts();
+        break;
       default:
-        console.log("message did not match");
+        console.log("message did not match: ", message);
     }
     console.log("content", state);
     return Promise.resolve(state);

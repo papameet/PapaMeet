@@ -25,6 +25,7 @@ function setJoinTime(time) {
 function setLeaveThreshold(threshold) {
   const leaveThreshold = document.getElementById("leave_threshold");
   leaveThreshold.value = threshold;
+  leaveThreshold.setAttribute("value", threshold);
 }
 
 export async function setUpSettingsFromStorage(state) {
@@ -42,6 +43,7 @@ export async function setUpSettingsFromStorage(state) {
   } catch (e) {
     getTimeFailure(e);
   }
+  state.joinTime = joinTime.joinTime;
   return { joinTime: joinTime.joinTime };
 }
 
