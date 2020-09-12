@@ -30,10 +30,10 @@ export function joinCall() {
   if (joinButton !== undefined) {
     console.log("joined meeting.");
     joinButton.click();
-    return(1)
-} else {
+    return 1;
+  } else {
     console.error("join button not found");
-    return(0)
+    return 0;
   }
 }
 
@@ -47,28 +47,30 @@ function getPeopleCount() {
   return parseInt(count);
 }
 
-export let leaveTimeoutId, leaveInitTimeoutId;
+export function leaveWhenPeopleLessThan(state) {
+  const count = state.people_threshold;
+  if (state.leaveInitId) clearInterval(leaveInitId);
+  if (state.leaveId) clearInterval(leaveId);
 
-export function leaveWhenPeopleLessThan(count) {
-  clearTimeout(leaveInitTimeoutId);
-  clearTimeout(leaveTimeoutId);
-  function run() {
-    console.log("leave run");
+  function leave() {
     let people_count_now = getPeopleCount();
     if (count > people_count_now) {
       console.log("leaving now. people count:", people_count_now);
+      clearInterval(state.leaveId);
       leaveCall();
     } else {
       leaveTimeoutId = setTimeout(run, 1000, count);
     }
   }
 
-  (function runInit() {
+  function runInit() {
     if (getPeopleCount() > count + 2) {
-      run();
-    } else {
-      leaveInitTimeoutId = setTimeout(runInit, 1000);
+      console.log("leave init");
+      clearInterval(state.leaveInitId);
+      state.leaveInitId = 0;
+      state.leaveId = setInterval(leave, 1000);
     }
-  })();
-// change setTimeout to setTimer ?
+  }
+  state.leaveInitId = setInterval(runInit, 1000);
+  // change setTimeout to setTimer ?
 }

@@ -14,9 +14,21 @@ let state = {
   joinTime: 0,
   leaveThreshold: 0,
   canJoin: true,
+  submitReset: "submit",
   joinTimerOn: false,
   leaveTimerOn: false,
+  joinTimerId: 0,
 };
+
+function setUpListnerForInput() {
+  const leaveInput = document.getElementById("leave_threshold");
+  leaveInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      console.log("enter");
+      document.getElementById("submit").click();
+    }
+  });
+}
 
 function handleJoinInfo(request, sender, sendResponse) {
   console.log(request);
@@ -31,11 +43,54 @@ function listenForSubmit() {
   function catchError(e) {
     console.log(e);
   }
+  function toggleUI() {
+    let leaveInput = document.getElementById("leave_threshold");
+    let joinButton = document.getElementById("join");
+    if (state.submitReset == "reset") {
+      leaveInput.setAttribute("readonly", "");
+      leaveInput.setAttribute("class", "dark_border");
+      joinButton.setAttribute("disabled", "");
+    } else {
+      leaveInput.removeAttribute("readonly");
+      leaveInput.setAttribute("class", "");
+      if (state.canJoin) {
+        joinButton.removeAttribute("disabled");
+      }
+    }
+  }
+  function changeSubmitToReset() {
+    submit.innerText = "Reset";
+    state.submitReset = "reset";
+    toggleUI();
+  }
+  function changeResetToSubmit() {
+    submit.innerText = "Submit";
+    state.submitReset = "submit";
+    toggleUI();
+  }
   function success(recievedState) {
     console.log("Submit success, storing times");
-    state = recievedState;
+    updateState(recievedState);
     console.log(state);
     saveJoinTimeToStorage(state.joinTime);
+    changeSubmitToReset();
+  }
+  function onSubmitResetClick() {
+    if (state.submitReset == "submit") onSubmitClick();
+    if (state.submitReset == "reset") onResetClick();
+  }
+  function clearAllTimeouts() {
+    console.log("initiating clear timouts in main");
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      browser.tabs
+        .sendMessage(tabs[0].id, { message: "clearAllTimeouts", state })
+        .then(updateState)
+        .catch((e) => console.error(e));
+    });
+  }
+  function onResetClick() {
+    clearAllTimeouts();
+    changeResetToSubmit();
   }
   function onSubmitClick() {
     console.log("onSubmit click");
@@ -50,8 +105,9 @@ function listenForSubmit() {
         .catch(catchError);
     });
   }
+
   const submit = document.getElementById("submit");
-  submit.addEventListener("click", onSubmitClick);
+  submit.addEventListener("click", onSubmitResetClick);
 }
 
 let joinInstance;
@@ -86,10 +142,11 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
 
 function updateState(recievedState) {
   state = recievedState;
+  console.log("main state updated:", state);
 }
 
-setUpSettingsFromStorage(state).then(() => {
-  setupTimepickers();
+setUpSettingsFromStorage(state).then((joinTime) => {
+  setupTimepickers(joinTime);
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     browser.tabs
       .sendMessage(tabs[0].id, { message: "sendState", state })
@@ -104,3 +161,4 @@ browser.tabs
   .catch((e) => console.error("Error occured: " + e));
 
 browser.runtime.onMessage.addListener(handleJoinInfo);
+setUpListnerForInput();
