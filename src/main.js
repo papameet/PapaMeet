@@ -38,36 +38,38 @@ function handleJoinInfo(request, sender, sendResponse) {
   }
 }
 
+function toggleUI() {
+  let leaveInput = document.getElementById("leave_threshold");
+  let joinButton = document.getElementById("join");
+  if (state.submitReset == "reset") {
+    leaveInput.setAttribute("readonly", "");
+    leaveInput.setAttribute("class", "dark_border");
+    joinButton.setAttribute("disabled", "");
+  } else {
+    leaveInput.removeAttribute("readonly");
+    leaveInput.setAttribute("class", "");
+    if (state.canJoin) {
+      joinButton.removeAttribute("disabled");
+    }
+  }
+}
+function changeSubmitToReset() {
+  submit.innerText = "Reset";
+  state.submitReset = "reset";
+  toggleUI();
+}
+function changeResetToSubmit() {
+  submit.innerText = "Submit";
+  state.submitReset = "submit";
+  toggleUI();
+}
+
 function listenForSubmit() {
   console.log("listen");
   function catchError(e) {
     console.log(e);
   }
-  function toggleUI() {
-    let leaveInput = document.getElementById("leave_threshold");
-    let joinButton = document.getElementById("join");
-    if (state.submitReset == "reset") {
-      leaveInput.setAttribute("readonly", "");
-      leaveInput.setAttribute("class", "dark_border");
-      joinButton.setAttribute("disabled", "");
-    } else {
-      leaveInput.removeAttribute("readonly");
-      leaveInput.setAttribute("class", "");
-      if (state.canJoin) {
-        joinButton.removeAttribute("disabled");
-      }
-    }
-  }
-  function changeSubmitToReset() {
-    submit.innerText = "Reset";
-    state.submitReset = "reset";
-    toggleUI();
-  }
-  function changeResetToSubmit() {
-    submit.innerText = "Submit";
-    state.submitReset = "submit";
-    toggleUI();
-  }
+
   function success(recievedState) {
     console.log("Submit success, storing times");
     updateState(recievedState);
@@ -117,8 +119,8 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
   if (joinTimeStored) {
     state.joinTime = joinTimeStored;
     joinTimeStr = to24hours(joinTimeStored);
+    console.log(joinTimeStr, joinTimeStored);
   }
-
   const elems = document.querySelectorAll(".timepicker");
   joinInstance = M.Timepicker.init(elems[0], {
     defaultTime: joinTimeStr ? joinTimeStr : new Date().toLocaleTimeString(),
@@ -142,6 +144,14 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
 
 function updateState(recievedState) {
   state = recievedState;
+  browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+    browser.tabs
+      .sendMessage(tabs[0].id, { message: "sendState", state })
+      .then((contentState) => {
+        state = contentState;
+      })
+      .catch((e) => console.error(e));
+  });
   console.log("main state updated:", state);
 }
 
@@ -150,7 +160,13 @@ setUpSettingsFromStorage(state).then((joinTime) => {
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     browser.tabs
       .sendMessage(tabs[0].id, { message: "sendState", state })
-      .then(updateState)
+      .then((recievedState) => {
+        state = recievedState;
+        if (state.leaveTimerOn) {
+          state.submitReset = "reset";
+          changeSubmitToReset();
+        }
+      })
       .catch((e) => console.error(e));
   });
 });

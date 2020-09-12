@@ -14,7 +14,7 @@ function getLeaveButton() {
   return document.querySelector("[aria-label='Leave call']");
 }
 
-export function leaveCall() {
+export function leaveCall(state) {
   const leaveButton = getLeaveButton();
   if (leaveButton !== undefined) {
     leaveButton.click();
@@ -22,6 +22,7 @@ export function leaveCall() {
   } else {
     console.error("leave button not found");
   }
+  state.leaveTimerOn = false;
 }
 
 export function joinCall() {
@@ -49,15 +50,16 @@ function getPeopleCount() {
 
 export function leaveWhenPeopleLessThan(state) {
   const count = state.people_threshold;
-  if (state.leaveInitId) clearInterval(leaveInitId);
-  if (state.leaveId) clearInterval(leaveId);
+  state.leaveTimerOn = true;
+  if (state.leaveInitId) clearInterval(state.leaveInitId);
+  if (state.leaveId) clearInterval(state.leaveId);
 
   function leave() {
     let people_count_now = getPeopleCount();
     if (count > people_count_now) {
       console.log("leaving now. people count:", people_count_now);
       clearInterval(state.leaveId);
-      leaveCall();
+      leaveCall(state);
     } else {
       leaveTimeoutId = setTimeout(run, 1000, count);
     }
