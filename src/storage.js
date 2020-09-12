@@ -19,7 +19,7 @@ function setJoinTime(time) {
   const elem = document.querySelector(".timepicker");
   elem.innerHTML = `<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>`;
   const span = document.getElementById("joinSpan");
-  span.innerHTML = `${time.hours}:${time.minutes}${time.amOrPm}`;
+  span.innerHTML = `${time.hours<10?'0'+time.hours:time.hours}:${time.minutes<10?'0'+time.minutes:time.minutes}${time.amOrPm}`;
 }
 
 function setLeaveThreshold(threshold) {
