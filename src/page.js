@@ -1,5 +1,6 @@
 export function getJoinButton() {
   const spans = document.getElementsByTagName("span");
+  // eslint-disable-next-line no-restricted-syntax
   for (const span of spans) {
     // console.log(span.textContent)
     if (span.textContent === "Join now" || span.textContent === "Ask to join")
@@ -42,7 +43,7 @@ function getPeopleCount() {
   } catch (e) {
     count = "0";
   }
-  return parseInt(count);
+  return parseInt(count, 10);
 }
 
 export function leaveWhenPeopleLessThan(state) {
@@ -52,9 +53,9 @@ export function leaveWhenPeopleLessThan(state) {
   if (state.leaveId) clearInterval(state.leaveId);
 
   function leave() {
-    const people_count_now = getPeopleCount();
-    if (count > people_count_now) {
-      console.log("leaving now. people count:", people_count_now);
+    const peopleCountNow = getPeopleCount();
+    if (count > peopleCountNow) {
+      console.log("leaving now. people count:", peopleCountNow);
       clearInterval(state.leaveId);
       leaveCall(state);
     } else {
