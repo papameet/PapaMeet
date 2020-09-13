@@ -58,8 +58,6 @@ export function leaveWhenPeopleLessThan(state) {
       console.log("leaving now. people count:", peopleCountNow);
       clearInterval(state.leaveId);
       leaveCall(state);
-    } else {
-      leaveTimeoutId = setTimeout(run, 1000, count);
     }
   }
 
