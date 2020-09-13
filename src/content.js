@@ -25,7 +25,7 @@ function setUpTimeouts(state) {
         state.joinTimerId = 0;
       });
   } else {
-      state.joinTimerId = 0;
+    state.joinTimerId = 0;
   }
   cancelPreviousTimeouts();
   storeTimeoutIds(state.joinTimerId);

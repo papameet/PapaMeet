@@ -98,7 +98,8 @@ function listenForSubmit() {
   function onSubmitClick() {
     console.log("onSubmit click");
     state.leaveThreshold = parseInt(
-      document.getElementById("leave_threshold").value, 10
+      document.getElementById("leave_threshold").value,
+      10
     );
     storeLeaveThreshold(state.leaveThreshold);
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
