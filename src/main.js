@@ -125,7 +125,7 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
   }
   const elems = document.querySelectorAll(".timepicker");
   joinInstance = M.Timepicker.init(elems[0], {
-    defaultTime: joinTimeStr || new Date().toLocaleTimeString(),
+    defaultTime: joinTimeStr || "now",
     onCloseEnd() {
       state.joinTime = {
         hours: this.hours,
