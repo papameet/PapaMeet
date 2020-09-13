@@ -47,7 +47,7 @@ function getPeopleCount() {
 }
 
 export function leaveWhenPeopleLessThan(state) {
-  const count = state.people_threshold;
+  const count = state.leaveThreshold;
   state.leaveTimerOn = true;
   if (state.leaveInitId) clearInterval(state.leaveInitId);
   if (state.leaveId) clearInterval(state.leaveId);
@@ -63,7 +63,6 @@ export function leaveWhenPeopleLessThan(state) {
 
   function runInit() {
     if (getPeopleCount() > count + 2) {
-      console.log("leave init");
       clearInterval(state.leaveInitId);
       state.leaveInitId = 0;
       state.leaveId = setInterval(leave, 1000);
