@@ -54,6 +54,8 @@ function toggleUI() {
   }
 }
 
+const submit = document.getElementById("submit");
+
 function changeSubmitToReset() {
   submit.innerText = "Reset";
   state.submitReset = "reset";
@@ -110,7 +112,6 @@ function listenForSubmit() {
     });
   }
 
-  const submit = document.getElementById("submit");
   submit.addEventListener("click", onSubmitResetClick);
 }
 
