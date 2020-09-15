@@ -67,13 +67,10 @@ function sendJoinInfo(e) {
   };
 
   function updateState(recievedState) {
-    state = {
-      ...state,
-      joinTime: recievedState.joinTime,
-      leaveThreshold: recievedState.leaveThreshold,
-      canJoin: !!getJoinButton(),
-      submitReset: recievedState.submitReset,
-    };
+    state.joinTime = recievedState.joinTime;
+    state.leaveThreshold = recievedState.leaveThreshold;
+    state.canJoin = !!getJoinButton();
+    state.submitReset = recievedState.submitReset;
   }
 
   function onSubmit() {
