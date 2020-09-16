@@ -16,3 +16,15 @@ export function to24hours(time) {
   str24hr += `${hours}:${minutes}`;
   return str24hr;
 }
+
+export function convertToChipsData(dataArray) {
+  const chipsData = [];
+  dataArray.forEach(word => chipsData.push({tag: word}));
+  return chipsData;
+}
+
+export function convertChipsData(chipsDataArray) {
+  const data = [];
+  chipsDataArray.forEach(dataObj => data.push(dataObj.tag));
+  return data;
+}

@@ -46,6 +46,34 @@ function getPeopleCount() {
   return parseInt(count, 10);
 }
 
+let previousContent = "";
+
+function getSubtitlesContent() {
+  const selector = ".iTTPOb.VbkSUe",
+    content = document.querySelector(selector).textContent;
+  if (content !== previousContent) {
+    previousContent = content;
+    return content.toLowerCase();
+  }
+  return "";
+}
+
+function subtitlesContains(word) {
+  word = word.toLowerCase();
+  return getSubtitlesContent().includes(word) && word;
+}
+
+export function startSubtitleTimers(state) {
+  if (state.subtitleTimerId) clearInterval(state.subtitleTimerId);
+  function checkAndNotify() {
+    state.alertWords.forEach((alertWord) => {
+      if (subtitlesContains(alertWord))
+        browser.runtime.sendMessage({ notify: true, alertWord });
+    });
+  }
+  state.subtitleTimerId = setInterval(checkAndNotify, 300);
+}
+
 export function leaveWhenPeopleLessThan(state) {
   const count = state.leaveThreshold;
   state.leaveTimerOn = true;
