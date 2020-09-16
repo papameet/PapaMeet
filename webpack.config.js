@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     main: "./src/main.js",
     content: "./src/content.js",
+    background: "./src/background.js",
   },
   mode: "development",
   output: {

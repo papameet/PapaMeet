@@ -43,6 +43,11 @@ export async function setUpSettingsFromStorage(state) {
       "leaveThreshold"
     );
     if (leaveThreshold) setLeaveThreshold(leaveThreshold);
+
+    const { alertWords } = await browser.storage.local.get("alertWords");
+    if (alertWords) {
+      state.alertWords = alertWords;
+    }
   } catch (e) {
     getTimeFailure(e);
   }
@@ -68,4 +73,8 @@ export function storeTimeoutIds(joinTimerId) {
 
 export function storeLeaveThreshold(leaveThreshold) {
   browser.storage.local.set({ leaveThreshold }).then(storeSucess, storeFailure);
+}
+
+export function storeAlertWords(alertWords) {
+  browser.storage.local.set({ alertWords }).then(storeSucess, storeFailure);
 }

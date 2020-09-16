@@ -1,4 +1,9 @@
-import { joinCall, getJoinButton, leaveWhenPeopleLessThan } from "./page";
+import {
+  joinCall,
+  getJoinButton,
+  leaveWhenPeopleLessThan,
+  startSubtitleTimers,
+} from "./page";
 import { getDateObject } from "./helpers";
 import { storeTimeoutIds, cancelPreviousTimeouts } from "./storage";
 
@@ -54,7 +59,7 @@ function sendJoinInfo(e) {
 
   console.log("contentscript");
 
-  let state = {
+  const state = {
     joinTime: 10,
     leaveThreshold: 0,
     canJoin: true,
@@ -71,11 +76,17 @@ function sendJoinInfo(e) {
     state.leaveThreshold = recievedState.leaveThreshold;
     state.canJoin = !!getJoinButton();
     state.submitReset = recievedState.submitReset;
+    state.alertWords = recievedState.alertWords;
   }
 
   function onSubmit() {
-    if (state.joinTime) setUpTimeouts(state);
-    leaveWhenPeopleLessThan(state);
+    try {
+      if (state.joinTime) setUpTimeouts(state);
+      leaveWhenPeopleLessThan(state);
+      startSubtitleTimers(state);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   function clearAllTimeouts() {

@@ -1,12 +1,13 @@
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 import "./index.css";
-import { to24hours } from "./helpers";
+import { convertChipsData, convertToChipsData, to24hours } from "./helpers";
 import "./checkbox";
 
 import {
   saveJoinTimeToStorage,
   setUpSettingsFromStorage,
+  storeAlertWords,
   storeLeaveThreshold,
 } from "./storage";
 
@@ -18,6 +19,8 @@ let state = {
   joinTimerOn: false,
   leaveTimerOn: false,
   joinTimerId: 0,
+  alertWords: ["attendance"],
+  subtitleTimerId: 0,
 };
 
 function setUpListnerForInput() {
@@ -99,11 +102,16 @@ function listenForSubmit() {
   }
   function onSubmitClick() {
     console.log("onSubmit click");
+
+    state.alertWords = getAlertWords();
     state.leaveThreshold = parseInt(
       document.getElementById("leave_threshold").value,
       10
     );
+
+    storeAlertWords(state.alertWords);
     storeLeaveThreshold(state.leaveThreshold);
+
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
         .sendMessage(tabs[0].id, { message: "submit", state })
@@ -145,6 +153,23 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
   // todo: rewrite these functions
 }
 
+function setupChips(words) {
+  words = convertToChipsData(words);
+  const elems = document.querySelectorAll(".chips");
+  M.Chips.init(elems, {
+    data: words,
+    placeholder: "Enter alert words to get notified!",
+    secondaryPlaceholder: "Alert word",
+  });
+}
+
+function getAlertWords() {
+  const elem = document.querySelector(".chips"),
+    instance = M.Chips.getInstance(elem);
+
+  return convertChipsData(instance.chipsData);
+}
+
 function updateState(recievedState) {
   state = recievedState;
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
@@ -160,6 +185,7 @@ function updateState(recievedState) {
 
 setUpSettingsFromStorage(state).then((joinTime) => {
   setupTimepickers(joinTime);
+  setupChips(state.alertWords);
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     browser.tabs
       .sendMessage(tabs[0].id, { message: "sendState", state })
