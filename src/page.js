@@ -1,3 +1,5 @@
+const CAPTIONS_SELECTOR = "I98jWb";
+
 export function getJoinButton() {
   const spans = document.getElementsByTagName("span");
   // eslint-disable-next-line no-restricted-syntax
@@ -63,8 +65,21 @@ function subtitlesContains(word) {
   return getSubtitlesContent().includes(word) && word;
 }
 
+function subtitlesTurnedOff() {
+  return (
+    document.getElementsByClassName(CAPTIONS_SELECTOR)[0].textContent ===
+    "Turn on captions"
+  );
+}
+
+function turnOnSubtitles() {
+  document.getElementsByClassName(CAPTIONS_SELECTOR)[0].click();
+}
+
 export function startSubtitleTimers(state) {
   if (state.subtitleTimerId) clearInterval(state.subtitleTimerId);
+  if (subtitlesTurnedOff()) turnOnSubtitles();
+
   function checkAndNotify() {
     state.alertWords.forEach((alertWord) => {
       if (subtitlesContains(alertWord))
