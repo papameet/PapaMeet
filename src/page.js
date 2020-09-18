@@ -48,45 +48,54 @@ function getPeopleCount() {
   return parseInt(count, 10);
 }
 
-let previousContent = "";
-
 function getSubtitlesContent() {
   const selector = ".iTTPOb.VbkSUe",
-    content = document.querySelector(selector).textContent;
-  if (content !== previousContent) {
-    previousContent = content;
-    return content.toLowerCase();
-  }
-  return "";
+    content = document.querySelector(selector);
+  if (!content) return "";
+  return content.textContent;
 }
 
-function subtitlesContains(word) {
-  word = word.toLowerCase();
-  return getSubtitlesContent().includes(word) && word;
+let previousContent = "";
+function previousContinuesCurrentCaption(current) {
+  return previousContent && current.startsWith(previousContent);
 }
 
-function subtitlesTurnedOff() {
+function canNotifyCaptions(currentCaptions, alertWord) {
+  return (
+    !previousContinuesCurrentCaption(currentCaptions) &&
+    currentCaptions.toLowerCase().includes(alertWord)
+  );
+}
+
+function captionsTurnedOff() {
   return (
     document.getElementsByClassName(CAPTIONS_SELECTOR)[0].textContent ===
     "Turn on captions"
   );
 }
 
-function turnOnSubtitles() {
+function turnOnCaptions() {
   document.getElementsByClassName(CAPTIONS_SELECTOR)[0].click();
 }
 
 export function startSubtitleTimers(state) {
   if (state.subtitleTimerId) clearInterval(state.subtitleTimerId);
-  if (subtitlesTurnedOff()) turnOnSubtitles();
+  if (captionsTurnedOff()) turnOnCaptions();
 
-  function checkAndNotify() {
-    state.alertWords.forEach((alertWord) => {
-      if (subtitlesContains(alertWord))
+  state.subtitleTimerId = setTimeout(function checkAndNotify() {
+    let time = 500;
+    const captions = getSubtitlesContent();
+
+    for (let i = 0; i < state.alertWords.length; i += 1) {
+      const alertWord = state.alertWords[i];
+      if (canNotifyCaptions(captions, alertWord)) {
+        time = 15000;
         browser.runtime.sendMessage({ notify: true, alertWord });
-    });
-  }
-  state.subtitleTimerId = setInterval(checkAndNotify, 300);
+      }
+    }
+    previousContent = captions;
+    state.subtitleTimerId = setTimeout(checkAndNotify, time);
+  }, 1000);
 }
 
 export function leaveWhenPeopleLessThan(state) {
