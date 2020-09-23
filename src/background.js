@@ -1,13 +1,13 @@
+const audio = new Audio("./audio.mp3");
 function PlayAudio() {
-  const audio = new Audio("./swiftly.mp3");
   audio.play();
 }
 
 function notify(word) {
   browser.notifications.create({
-    "type": "basic",
-    "title": 'AutoMeet',
-    "message": `The word '${word}' has appeared!`,
+    type: "basic",
+    title: "AutoMeet",
+    message: `The word '${word}' has appeared!`,
   });
 }
 
@@ -16,4 +16,9 @@ browser.runtime.onMessage.addListener((message) => {
     PlayAudio();
     notify(message.alertWord);
   }
+});
+
+browser.notifications.onClosed.addListener(() => {
+  audio.pause();
+  audio.currentTime = 0;
 });
