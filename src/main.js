@@ -23,15 +23,6 @@ let state = {
   subtitleTimerId: 0,
 };
 
-function setUpListnerForInput() {
-  const leaveInput = document.getElementById("leave_threshold");
-  leaveInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      console.log("enter");
-      document.getElementById("submit").click();
-    }
-  });
-}
 
 function handleJoinInfo(request, sender, sendResponse) {
   console.log(request);
@@ -69,20 +60,20 @@ function changeResetToSubmit() {
   state.submitReset = "submit";
   toggleUI();
 }
+function catchError(e) {
+  console.log(e);
+}
+
+function success(recievedState) {
+  console.log("Submit success, storing times");
+  updateState(recievedState);
+  console.log(state);
+  saveJoinTimeToStorage(state.joinTime);
+  changeSubmitToReset();
+}
 
 function listenForSubmit() {
   console.log("listen");
-  function catchError(e) {
-    console.log(e);
-  }
-
-  function success(recievedState) {
-    console.log("Submit success, storing times");
-    updateState(recievedState);
-    console.log(state);
-    saveJoinTimeToStorage(state.joinTime);
-    changeSubmitToReset();
-  }
   function onSubmitResetClick() {
     if (state.submitReset == "submit") onSubmitClick();
     if (state.submitReset == "reset") onResetClick();
@@ -154,12 +145,28 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
 }
 
 function setupChips(words) {
+  function onChipsModified(){
+    state.alertWords = getAlertWords();
+    storeAlertWords(state.alertWords);
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+      browser.tabs
+        .sendMessage(tabs[0].id, { message: "updateWords", state })
+        .then(success)
+        .catch(catchError);
+    });
+  }
   words = convertToChipsData(words);
   const elems = document.querySelectorAll(".chips");
   M.Chips.init(elems, {
     data: words,
     placeholder: "Enter alert words to get notified!",
     secondaryPlaceholder: "Alert word",
+    onChipAdd(){
+      onChipsModified();
+    },
+    onChipDelete(){
+      onChipsModified();
+    }
   });
 }
 
@@ -206,4 +213,4 @@ browser.tabs
   .catch((e) => console.error(`Error occured: ${e}`));
 
 browser.runtime.onMessage.addListener(handleJoinInfo);
-setUpListnerForInput();
+//setUpListnerForInput();

@@ -85,7 +85,6 @@ export function startSubtitleTimers(state) {
   state.subtitleTimerId = setTimeout(function checkAndNotify() {
     let time = 500;
     const captions = getSubtitlesContent();
-
     for (let i = 0; i < state.alertWords.length; i += 1) {
       const alertWord = state.alertWords[i];
       if (canNotifyCaptions(captions, alertWord)) {
