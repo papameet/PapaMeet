@@ -23,6 +23,17 @@ header {
   top: 0 !important;
 }
 
+
+html::-webkip-scrollbar{
+  display:none;
+}
+
+html{ 
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 html,
 body {
   width: 300px;
@@ -36,6 +47,7 @@ body {
   padding: 0 2rem;
   top: 2rem;
   position: relative;
+  padding-bottom: 1rem;
 }
 
 #submit{
@@ -136,4 +148,11 @@ input[type="number"] {
   border-style: solid !important;
   border-width: 1px !important;
   border-color: #9f9f9f  !important;
+}
+.chips{
+  width: 268px;
+  margin-left: -10px;
+}
+.chip{
+  font-size: 0.8rem;
 }

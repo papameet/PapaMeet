@@ -21,6 +21,7 @@
         "no-console": "warn",
         "no-restricted-syntax": "warn",
         "func-names":"off",
-        "no-param-reassign": "off"
+        "no-param-reassign": "off",
+        "no-use-before-define": "off"
     }
 }
