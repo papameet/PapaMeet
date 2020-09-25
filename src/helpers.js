@@ -1,9 +1,13 @@
 export function getDateObject(timeObjectFromPicker) {
-  const hours =
-      timeObjectFromPicker.hours +
-      (timeObjectFromPicker.amOrPm === "PM" ? 12 : 0),
-    { minutes } = timeObjectFromPicker,
-    date = new Date();
+  let { hours } = timeObjectFromPicker;
+  const { minutes } = timeObjectFromPicker;
+  const date = new Date();
+
+  if (hours !== 12) {
+    hours += timeObjectFromPicker.amOrPm === "PM" ? 12 : 0;
+  }
+  if (timeObjectFromPicker.amOrPm === "AM" && hours === 12) hours = 0;
+
   date.setHours(hours, minutes, 0);
   return date;
 }
