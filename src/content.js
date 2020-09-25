@@ -20,7 +20,15 @@ function setUpTimeouts(state) {
       }, joinTimeDateObj - Date.now());
       state.joinTimerOn = true;
     })
-      .then((success) => {
+      .then(function _(success, counter = 0) {
+        try {
+          startSubtitleTimers(state);
+        } catch {
+          if (counter < 5) {
+            counter += 1;
+            setTimeout(() => _(success, counter), 2000);
+          }
+        }
         state.joinTimerOn = false;
         state.joinTimerId = 0;
       })
@@ -83,7 +91,7 @@ function sendJoinInfo(e) {
     try {
       if (state.joinTime) setUpTimeouts(state);
       leaveWhenPeopleLessThan(state);
-      startSubtitleTimers(state);
+      if (!state.canJoin) startSubtitleTimers(state);
     } catch (e) {
       console.error(e);
     }
