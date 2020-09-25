@@ -79,7 +79,7 @@ function turnOnCaptions() {
 }
 
 export function startSubtitleTimers(state) {
-  if (state.subtitleTimerId) clearInterval(state.subtitleTimerId);
+  if (state.subtitleTimerId) clearTimeout(state.subtitleTimerId);
   if (captionsTurnedOff()) turnOnCaptions();
 
   state.subtitleTimerId = setTimeout(function checkAndNotify() {

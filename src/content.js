@@ -97,6 +97,7 @@ function sendJoinInfo(e) {
     }
     clearInterval(state.leaveInitId);
     clearInterval(state.leaveId);
+    clearTimeout(state.subtitleTimerId);
     state.leaveId = 0;
     state.leaveInitId = 0;
     state.leaveTimerOn = false;
