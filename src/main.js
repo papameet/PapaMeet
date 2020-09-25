@@ -3,6 +3,7 @@ import "materialize-css/dist/css/materialize.min.css";
 import "./index.css";
 import { convertChipsData, convertToChipsData, to24hours } from "./helpers";
 import "./checkbox";
+import MChips from "./chips";
 
 import {
   saveJoinTimeToStorage,
@@ -157,7 +158,7 @@ function setupChips(words) {
   }
   words = convertToChipsData(words);
   const elems = document.querySelectorAll(".chips");
-  M.Chips.init(elems, {
+  MChips.init(elems, {
     data: words,
     placeholder: "Enter alert words to get notified!",
     secondaryPlaceholder: "Alert word",
@@ -166,7 +167,7 @@ function setupChips(words) {
     },
     onChipDelete(){
       onChipsModified();
-    }
+    },
   });
 }
 
