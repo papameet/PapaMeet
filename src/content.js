@@ -118,6 +118,10 @@ function sendJoinInfo(e) {
       case "clearAllTimeouts":
         clearAllTimeouts();
         break;
+      case "updateWords":
+        startSubtitleTimers(state);
+        console.log(state)
+        break;
       default:
         console.log("message did not match: ", message);
     }
