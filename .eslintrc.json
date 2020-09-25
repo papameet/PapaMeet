@@ -16,7 +16,7 @@
     "plugins": ["prettier"],
     "rules":{
         "prettier/prettier": ["warn"],
-        "one-var": ["warn", "consecutive"],
+        "one-var": ["off"],
         "no-unused-vars": "warn",
         "no-console": "warn",
         "no-restricted-syntax": "warn",
