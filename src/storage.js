@@ -1,9 +1,11 @@
+import { getDateObject, getPageURL } from "./helpers";
+
 function storeSucess() {
   console.log("Succesfully stored to local storage.");
 }
 
 function storeFailure(e) {
-  console.log("Failed to store with error:", e);
+  console.error("Failed to store with error:", e);
 }
 
 export function saveJoinTimeToStorage(joinTime) {
@@ -11,7 +13,7 @@ export function saveJoinTimeToStorage(joinTime) {
 }
 
 function getTimeFailure(e) {
-  console.log("Failed to get stored time. error:", e);
+  console.error("Failed to get stored time. error:", e);
 }
 
 function setJoinTime(time) {
@@ -31,23 +33,26 @@ function setLeaveThreshold(threshold) {
 }
 
 export async function setUpSettingsFromStorage(state) {
-  let joinTime;
+  let joinTime, leaveThreshold, alertWords;
   try {
-    joinTime = await browser.storage.local.get("joinTime");
-    console.log("join", joinTime);
-    if (Object.keys(joinTime).length !== 0 && joinTime.joinTime) {
-      console.log("in object");
-      setJoinTime(joinTime);
-    }
-    const { leaveThreshold } = await browser.storage.local.get(
-      "leaveThreshold"
-    );
-    if (leaveThreshold) setLeaveThreshold(leaveThreshold);
+    const url = await getPageURL();
+    const storedSettings = await browser.storage.local.get(url)[url];
 
-    const { alertWords } = await browser.storage.local.get("alertWords");
-    if (alertWords) {
-      state.alertWords = alertWords;
+    joinTime = storedSettings.joinTime;
+    leaveThreshold = storedSettings.leaveThreshold;
+    alertWords = storedSettings.alertWords;
+
+    if (Object.keys(joinTime).length !== 0 && joinTime.joinTime) {
+      if (getDateObject(joinTime.joinTime) > new Date()) setJoinTime(joinTime);
+      else {
+        delete storedSettings.joinTime;
+        const toStore = {};
+        toStore[url] = storedSettings;
+        await browser.storage.local.set(toStore);
+      }
     }
+    if (leaveThreshold) setLeaveThreshold(leaveThreshold);
+    if (alertWords) state.alertWords = alertWords;
   } catch (e) {
     getTimeFailure(e);
   }
@@ -60,21 +65,17 @@ function clearJoinTimeOut(object) {
 }
 
 export function cancelPreviousTimeouts() {
-  console.log("Clearing previous timeouts.");
   browser.storage.local
     .get("joinTimerId")
     .then(clearJoinTimeOut, getTimeFailure);
 }
 
 export function storeTimeoutIds(joinTimerId) {
-  console.log("storing timeout ids");
   browser.storage.local.set({ joinTimerId }).then(storeSucess, storeFailure);
 }
 
-export function storeLeaveThreshold(leaveThreshold) {
-  browser.storage.local.set({ leaveThreshold }).then(storeSucess, storeFailure);
-}
-
-export function storeAlertWords(alertWords) {
-  browser.storage.local.set({ alertWords }).then(storeSucess, storeFailure);
+export function storeSettings(url, joinTime, leaveThreshold, alertWords) {
+  const toStore = {};
+  toStore[url] = { joinTime, leaveThreshold, alertWords };
+  browser.storage.local.set(toStore).then(storeSucess, storeFailure);
 }
