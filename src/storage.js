@@ -1,3 +1,5 @@
+import { getDateObject } from "./helpers";
+
 function storeSucess() {
   console.log("Succesfully stored to local storage.");
 }
@@ -37,7 +39,8 @@ export async function setUpSettingsFromStorage(state) {
     console.log("join", joinTime);
     if (Object.keys(joinTime).length !== 0 && joinTime.joinTime) {
       console.log("in object");
-      setJoinTime(joinTime);
+      if (getDateObject(joinTime.joinTime) > new Date()) setJoinTime(joinTime);
+      else await browser.storage.local.remove("joinTime");
     }
     const { leaveThreshold } = await browser.storage.local.get(
       "leaveThreshold"
