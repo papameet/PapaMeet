@@ -1,4 +1,4 @@
-import { getDateObject } from "./helpers";
+import { getDateObject, getPageURL } from "./helpers";
 
 function storeSucess() {
   console.log("Succesfully stored to local storage.");
@@ -33,22 +33,26 @@ function setLeaveThreshold(threshold) {
 }
 
 export async function setUpSettingsFromStorage(state) {
-  let joinTime;
+  let joinTime, leaveThreshold, alertWords;
   try {
-    joinTime = await browser.storage.local.get("joinTime");
+    const url = await getPageURL();
+    const storedSettings = await browser.storage.local.get(url)[url];
+
+    joinTime = storedSettings.joinTime;
+    leaveThreshold = storedSettings.leaveThreshold;
+    alertWords = storedSettings.alertWords;
+
     if (Object.keys(joinTime).length !== 0 && joinTime.joinTime) {
       if (getDateObject(joinTime.joinTime) > new Date()) setJoinTime(joinTime);
-      else await browser.storage.local.remove("joinTime");
+      else {
+        delete storedSettings.joinTime;
+        const toStore = {};
+        toStore[url] = storedSettings;
+        await browser.storage.local.set(toStore);
+      }
     }
-    const { leaveThreshold } = await browser.storage.local.get(
-      "leaveThreshold"
-    );
     if (leaveThreshold) setLeaveThreshold(leaveThreshold);
-
-    const { alertWords } = await browser.storage.local.get("alertWords");
-    if (alertWords) {
-      state.alertWords = alertWords;
-    }
+    if (alertWords) state.alertWords = alertWords;
   } catch (e) {
     getTimeFailure(e);
   }
@@ -70,10 +74,8 @@ export function storeTimeoutIds(joinTimerId) {
   browser.storage.local.set({ joinTimerId }).then(storeSucess, storeFailure);
 }
 
-export function storeLeaveThreshold(leaveThreshold) {
-  browser.storage.local.set({ leaveThreshold }).then(storeSucess, storeFailure);
-}
-
-export function storeAlertWords(alertWords) {
-  browser.storage.local.set({ alertWords }).then(storeSucess, storeFailure);
+export function storeSettings(url, joinTime, leaveThreshold, alertWords) {
+  const toStore = {};
+  toStore[url] = { joinTime, leaveThreshold, alertWords };
+  browser.storage.local.set(toStore).then(storeSucess, storeFailure);
 }

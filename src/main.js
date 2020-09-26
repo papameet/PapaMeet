@@ -5,16 +5,12 @@ import {
   convertChipsData,
   convertToChipsData,
   getDateObject,
+  getPageURL,
   to24hours,
 } from "./helpers";
 import MChips from "./chips";
 
-import {
-  saveJoinTimeToStorage,
-  setUpSettingsFromStorage,
-  storeAlertWords,
-  storeLeaveThreshold,
-} from "./storage";
+import { setUpSettingsFromStorage, storeSettings } from "./storage";
 
 let state = {
   joinTime: 0,
@@ -67,9 +63,11 @@ function catchError(e) {
   console.error(e);
 }
 
-function success(recievedState) {
+function SubmitSuccess(recievedState) {
   updateState(recievedState);
-  saveJoinTimeToStorage(state.joinTime);
+  getPageURL().then((url) => {
+    storeSettings(url, state.joinTime, state.leaveThreshold, state.alertWords);
+  });
   changeSubmitToReset();
 }
 
@@ -100,13 +98,10 @@ function listenForSubmit() {
       10
     );
 
-    storeAlertWords(state.alertWords);
-    storeLeaveThreshold(state.leaveThreshold);
-
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
         .sendMessage(tabs[0].id, { message: "submit", state })
-        .then(success)
+        .then(SubmitSuccess)
         .catch(catchError);
     });
   }
@@ -148,7 +143,7 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
 }
 
 function setupChips(words) {
-  function onChipsModified(){
+  function onChipsModified() {
     state.alertWords = getAlertWords();
     storeAlertWords(state.alertWords);
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
@@ -164,10 +159,10 @@ function setupChips(words) {
     data: words,
     placeholder: "Enter alert words to get notified!",
     secondaryPlaceholder: "Alert word",
-    onChipAdd(){
+    onChipAdd() {
       onChipsModified();
     },
-    onChipDelete(){
+    onChipDelete() {
       onChipsModified();
     },
   });
