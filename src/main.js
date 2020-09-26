@@ -1,7 +1,12 @@
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 import "./index.css";
-import { convertChipsData, convertToChipsData, to24hours } from "./helpers";
+import {
+  convertChipsData,
+  convertToChipsData,
+  getDateObject,
+  to24hours,
+} from "./helpers";
 import "./checkbox";
 import MChips from "./chips";
 
@@ -89,6 +94,9 @@ function listenForSubmit() {
     });
   }
   function onResetClick() {
+    browser.storage.local.remove("joinTime");
+    const joinTimeButton = document.querySelector(".timepicker");
+    joinTimeButton.innerHTML = "Join Time";
     clearAllTimeouts();
     changeResetToSubmit();
   }
@@ -119,10 +127,14 @@ let joinInstance;
 
 function setupTimepickers({ joinTime: joinTimeStored }) {
   let joinTimeStr;
-  if (joinTimeStored) {
+
+  // When this evaluate to true it mostly means join time button is blocked.
+  // When unblocked by clicking reset we delete the time object from storage.
+  //  This check is just to avoid inconsistencies in odd cases like reloading
+  // the extension while letting the time object stay in storage.
+  if (joinTimeStored && getDateObject(joinTimeStored) > new Date()) {
     state.joinTime = joinTimeStored;
     joinTimeStr = to24hours(joinTimeStored);
-    console.log(joinTimeStr, joinTimeStored);
   }
   const elems = document.querySelectorAll(".timepicker");
   joinInstance = M.Timepicker.init(elems[0], {
