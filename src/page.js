@@ -60,7 +60,11 @@ function previousContinuesCurrentCaption(current) {
 function canNotifyCaptions(currentCaptions, alertWord) {
   return (
     !previousContinuesCurrentCaption(currentCaptions) &&
-    currentCaptions.toLowerCase().includes(alertWord)
+    currentCaptions
+      .replace(/\.|,/g, "")
+      .toLowerCase()
+      .split(" ")
+      .includes(alertWord)
   );
 }
 
