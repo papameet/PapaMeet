@@ -11,8 +11,6 @@ function setUpTimeouts(state) {
   const { joinTime } = state,
     joinTimeDateObj = getDateObject(joinTime);
 
-  console.log("setting up timeouts", { join: joinTimeDateObj });
-
   if (joinTime) {
     new Promise((resolve, reject) => {
       state.joinTimerId = setTimeout(() => {
@@ -33,7 +31,7 @@ function setUpTimeouts(state) {
         state.joinTimerId = 0;
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
         state.joinTimerOn = false;
         state.joinTimerId = 0;
       });
@@ -50,8 +48,8 @@ function sendJoinInfo(e) {
       join: !!joinBtn,
     });
   sending.then(
-    (respone) => {
-      console.log("sent join info");
+    (response) => {
+      console.log("sent join info. response:", response);
     },
     (err) => console.error(err)
   );
@@ -64,8 +62,6 @@ function sendJoinInfo(e) {
     return;
   }
   window.hasRun = true;
-
-  console.log("contentscript");
 
   const state = {
     joinTime: 10,
@@ -110,14 +106,11 @@ function sendJoinInfo(e) {
     state.leaveInitId = 0;
     state.leaveTimerOn = false;
     storeTimeoutIds(0);
-    console.log("All timeouts cleared");
   }
 
   browser.runtime.onMessage.addListener((recievedObj, sender, sendResponse) => {
     const { message, state: recievedState } = recievedObj;
-    console.log("hi");
     updateState(recievedState);
-    console.log("message recieved in content:", message);
     switch (message) {
       case "submit":
         onSubmit();
@@ -129,12 +122,10 @@ function sendJoinInfo(e) {
         break;
       case "updateWords":
         startSubtitleTimers(state);
-        console.log(state)
         break;
       default:
         console.log("message did not match: ", message);
     }
-    console.log("content", state);
     return Promise.resolve(state);
   });
 })();
