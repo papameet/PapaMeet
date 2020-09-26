@@ -19,7 +19,6 @@ export function leaveCall(state) {
   const leaveButton = getLeaveButton();
   if (leaveButton !== undefined) {
     leaveButton.click();
-    console.log("left meeting");
   } else {
     console.error("leave button not found");
   }
@@ -28,9 +27,7 @@ export function leaveCall(state) {
 
 export function joinCall() {
   const joinButton = getJoinButton();
-  console.log(joinButton);
   if (joinButton !== undefined) {
-    console.log("joined meeting.");
     joinButton.click();
     return 1;
   }
@@ -106,7 +103,6 @@ export function leaveWhenPeopleLessThan(state) {
   function leave() {
     const peopleCountNow = getPeopleCount();
     if (count > peopleCountNow) {
-      console.log("leaving now. people count:", peopleCountNow);
       clearInterval(state.leaveId);
       leaveCall(state);
       browser.storage.local.remove("joinTime");
@@ -121,5 +117,4 @@ export function leaveWhenPeopleLessThan(state) {
     }
   }
   state.leaveInitId = setInterval(runInit, 1000);
-  // change setTimeout to setTimer ?
 }

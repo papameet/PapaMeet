@@ -5,7 +5,7 @@ function storeSucess() {
 }
 
 function storeFailure(e) {
-  console.log("Failed to store with error:", e);
+  console.error("Failed to store with error:", e);
 }
 
 export function saveJoinTimeToStorage(joinTime) {
@@ -13,7 +13,7 @@ export function saveJoinTimeToStorage(joinTime) {
 }
 
 function getTimeFailure(e) {
-  console.log("Failed to get stored time. error:", e);
+  console.error("Failed to get stored time. error:", e);
 }
 
 function setJoinTime(time) {
@@ -36,9 +36,7 @@ export async function setUpSettingsFromStorage(state) {
   let joinTime;
   try {
     joinTime = await browser.storage.local.get("joinTime");
-    console.log("join", joinTime);
     if (Object.keys(joinTime).length !== 0 && joinTime.joinTime) {
-      console.log("in object");
       if (getDateObject(joinTime.joinTime) > new Date()) setJoinTime(joinTime);
       else await browser.storage.local.remove("joinTime");
     }
@@ -63,14 +61,12 @@ function clearJoinTimeOut(object) {
 }
 
 export function cancelPreviousTimeouts() {
-  console.log("Clearing previous timeouts.");
   browser.storage.local
     .get("joinTimerId")
     .then(clearJoinTimeOut, getTimeFailure);
 }
 
 export function storeTimeoutIds(joinTimerId) {
-  console.log("storing timeout ids");
   browser.storage.local.set({ joinTimerId }).then(storeSucess, storeFailure);
 }
 

@@ -26,12 +26,12 @@ export function to24hours(time) {
 
 export function convertToChipsData(dataArray) {
   const chipsData = [];
-  dataArray.forEach(word => chipsData.push({tag: word}));
+  dataArray.forEach((word) => chipsData.push({ tag: word }));
   return chipsData;
 }
 
 export function convertChipsData(chipsDataArray) {
   const data = [];
-  chipsDataArray.forEach(dataObj => data.push(dataObj.tag));
+  chipsDataArray.forEach((dataObj) => data.push(dataObj.tag));
   return data;
 }

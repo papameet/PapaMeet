@@ -18,7 +18,7 @@
         "prettier/prettier": ["warn"],
         "one-var": ["off"],
         "no-unused-vars": "warn",
-        "no-console": "warn",
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
         "no-restricted-syntax": "warn",
         "func-names":"off",
         "no-param-reassign": "off",

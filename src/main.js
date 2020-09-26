@@ -7,7 +7,6 @@ import {
   getDateObject,
   to24hours,
 } from "./helpers";
-import "./checkbox";
 import MChips from "./chips";
 
 import {
@@ -29,9 +28,7 @@ let state = {
   subtitleTimerId: 0,
 };
 
-
 function handleJoinInfo(request, sender, sendResponse) {
-  console.log(request);
   if (!request.join) {
     document.getElementById("join").disabled = true;
     state.canJoin = false;
@@ -41,7 +38,7 @@ function handleJoinInfo(request, sender, sendResponse) {
 function toggleUI() {
   const leaveInput = document.getElementById("leave_threshold"),
     joinButton = document.getElementById("join");
-  if (state.submitReset == "reset") {
+  if (state.submitReset === "reset") {
     leaveInput.setAttribute("readonly", "");
     leaveInput.setAttribute("class", "dark_border");
     joinButton.setAttribute("disabled", "");
@@ -67,25 +64,21 @@ function changeResetToSubmit() {
   toggleUI();
 }
 function catchError(e) {
-  console.log(e);
+  console.error(e);
 }
 
 function success(recievedState) {
-  console.log("Submit success, storing times");
   updateState(recievedState);
-  console.log(state);
   saveJoinTimeToStorage(state.joinTime);
   changeSubmitToReset();
 }
 
 function listenForSubmit() {
-  console.log("listen");
   function onSubmitResetClick() {
-    if (state.submitReset == "submit") onSubmitClick();
-    if (state.submitReset == "reset") onResetClick();
+    if (state.submitReset === "submit") onSubmitClick();
+    if (state.submitReset === "reset") onResetClick();
   }
   function clearAllTimeouts() {
-    console.log("initiating clear timouts in main");
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
         .sendMessage(tabs[0].id, { message: "clearAllTimeouts", state })
@@ -101,8 +94,6 @@ function listenForSubmit() {
     changeResetToSubmit();
   }
   function onSubmitClick() {
-    console.log("onSubmit click");
-
     state.alertWords = getAlertWords();
     state.leaveThreshold = parseInt(
       document.getElementById("leave_threshold").value,
@@ -150,7 +141,6 @@ function setupTimepickers({ joinTime: joinTimeStored }) {
           "<div id='textContainer'><div class='left'>Join:</div><div id='joinSpan' class='right'></div></div>";
         const span = document.getElementById("joinSpan");
         span.innerHTML = this.time + this.amOrPm;
-        console.log("onClose", state.joinTime);
       }
     },
   });
@@ -200,7 +190,6 @@ function updateState(recievedState) {
       })
       .catch((e) => console.error(e));
   });
-  console.log("main state updated:", state);
 }
 
 setUpSettingsFromStorage(state).then((joinTime) => {
@@ -226,4 +215,3 @@ browser.tabs
   .catch((e) => console.error(`Error occured: ${e}`));
 
 browser.runtime.onMessage.addListener(handleJoinInfo);
-//setUpListnerForInput();
