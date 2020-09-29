@@ -200,7 +200,7 @@ getPageURL().then((url) => {
     content.removeAttribute("buttons-div");
     content.setAttribute("id", "incorrect-url")
     content.innerHTML =
-      "Uh-oh, unsupported URL.<br>Open again in a supported URL format: https://meet.google.com/xxx-xxxx-xxx";
+      "<div id='uhimg'><img src='error-page.svg'></div><div id='uhoh'>Uh-oh, unsupported URL<div>";
   }
 });
 

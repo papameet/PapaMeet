@@ -122,6 +122,23 @@ button:focus {
 #incorrect-url {
   font-size: 1.4rem;
   color: #695f5f;
+  width: 80%;
+  margin: auto;
+  padding-top: 2rem;
+}
+
+#incorrect-url img{
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#uhimg{
+  width: 210px;
+  margin: auto;
+}
+
+#uhoh{
+  text-align: center;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
