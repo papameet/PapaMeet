@@ -7,6 +7,7 @@ import {
 import { getDateObject } from "./helpers";
 import { storeTimeoutIds, cancelPreviousTimeouts } from "./storage";
 
+let browser = require("webextension-polyfill");
 function setUpTimeouts(state) {
   const { joinTime } = state,
     joinTimeDateObj = getDateObject(joinTime);
