@@ -35,3 +35,11 @@ export function convertChipsData(chipsDataArray) {
   chipsDataArray.forEach((dataObj) => data.push(dataObj.tag));
   return data;
 }
+
+export function getPageURL() {
+  return browser.tabs
+    .query({ currentWindow: true, active: true })
+    .then((tabs) => {
+      return tabs[0].url;
+    });
+}
