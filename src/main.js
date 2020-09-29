@@ -5,6 +5,7 @@ import {
   convertChipsData,
   convertToChipsData,
   getDateObject,
+  getPageURL,
   to24hours,
 } from "./helpers";
 import MChips from "./chips";
@@ -191,6 +192,17 @@ function updateState(recievedState) {
       .catch((e) => console.error(e));
   });
 }
+
+getPageURL().then((url) => {
+  const supportedMeetURLregex = /https:\/\/meet.google.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}\/*/;
+  if (!supportedMeetURLregex.test(url)) {
+    const content = document.getElementById("buttons-div");
+    content.removeAttribute("buttons-div");
+    content.setAttribute("id", "incorrect-url")
+    content.innerHTML =
+      "Uh-oh, unsupported URL.<br>Open again in a supported URL format: https://meet.google.com/xxx-xxxx-xxx";
+  }
+});
 
 setUpSettingsFromStorage(state).then((joinTime) => {
   setupTimepickers(joinTime);
