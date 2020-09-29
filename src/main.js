@@ -16,6 +16,8 @@ import {
   storeLeaveThreshold,
 } from "./storage";
 
+let browser = require("webextension-polyfill");
+
 let state = {
   joinTime: 0,
   leaveThreshold: 0,

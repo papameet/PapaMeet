@@ -36,6 +36,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.1.1",
     "style-loader": "^1.2.1",
+    "webextension-polyfill": "^0.6.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },
