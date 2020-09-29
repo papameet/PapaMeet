@@ -16,8 +16,6 @@ import {
   storeLeaveThreshold,
 } from "./storage";
 
-let browser = require("webextension-polyfill");
-
 let state = {
   joinTime: 0,
   leaveThreshold: 0,
@@ -211,6 +209,7 @@ setUpSettingsFromStorage(state).then((joinTime) => {
   });
 });
 
+browser.tabs.executeScript({ file: "browser-polyfill.js" });
 browser.tabs
   .executeScript({ file: "/content.js" })
   .then(listenForSubmit)

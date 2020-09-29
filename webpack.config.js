@@ -1,5 +1,5 @@
 const path = require("path");
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -31,8 +31,12 @@ module.exports = {
         {
           from: path.resolve(__dirname, "src", "static"),
           to: path.resolve(__dirname, "dist"),
-        }
-      ]
-    })
-  ]
+        },
+        {
+          from: "node_modules/webextension-polyfill/dist/browser-polyfill.js",
+          to: path.resolve(__dirname, "dist"),
+        },
+      ],
+    }),
+  ],
 };
