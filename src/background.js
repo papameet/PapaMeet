@@ -1,4 +1,3 @@
-let browser = require("webextension-polyfill");
 const audio = new Audio("./audio.mp3");
 function PlayAudio() {
   audio.play();
