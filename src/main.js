@@ -14,7 +14,9 @@ import {
   saveJoinTimeToStorage,
   setUpSettingsFromStorage,
   storeAlertWords,
+  storeCurrentURL,
   storeLeaveThreshold,
+  removeCurrentURLfromStorage,
 } from "./storage";
 
 let state = {
@@ -92,6 +94,7 @@ function listenForSubmit() {
     const joinTimeButton = document.querySelector(".timepicker");
     joinTimeButton.innerHTML = "Join Time";
     clearAllTimeouts();
+    removeCurrentURLfromStorage();
     changeResetToSubmit();
   }
   function onSubmitClick() {
@@ -103,6 +106,7 @@ function listenForSubmit() {
 
     storeAlertWords(state.alertWords);
     storeLeaveThreshold(state.leaveThreshold);
+    storeCurrentURL();
 
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       browser.tabs
@@ -200,6 +204,16 @@ getPageURL().then((url) => {
     content.setAttribute("id", "incorrect-url")
     content.innerHTML =
       "<div id='uhimg'><img src='error-page.svg'></div><div id='uhoh'>Uh-oh, unsupported URL<div>";
+  } else {
+    browser.storage.local.get("url").then((storedURL) => {
+      storedURL = storedURL.url;
+      if (storedURL && storedURL !== url) {
+        const content = document.getElementById("buttons-div");
+        content.removeAttribute("buttons-div");
+        content.setAttribute("id", "single-instance-err");
+        content.innerHTML = `Supports only one tab now. Open the extension in <p id="stored-url">${storedURL}</p> and click "Reset" to use here`;
+      }
+    });
   }
 });
 

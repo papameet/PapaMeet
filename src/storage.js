@@ -1,4 +1,4 @@
-import { getDateObject } from "./helpers";
+import { getDateObject, getPageURL } from "./helpers";
 
 function storeSucess() {
   console.log("Succesfully stored to local storage.");
@@ -76,4 +76,14 @@ export function storeLeaveThreshold(leaveThreshold) {
 
 export function storeAlertWords(alertWords) {
   browser.storage.local.set({ alertWords }).then(storeSucess, storeFailure);
+}
+
+export function storeCurrentURL() {
+  getPageURL().then((url) => {
+    browser.storage.local.set({ url }).then(storeSucess, storeFailure);
+  });
+}
+
+export function removeCurrentURLfromStorage() {
+  browser.storage.local.remove("url");
 }
