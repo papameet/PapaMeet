@@ -121,7 +121,7 @@ function sendJoinInfo(e) {
         clearAllTimeouts();
         break;
       case "updateWords":
-        startSubtitleTimers(state);
+        if (state.submitReset === "reset") startSubtitleTimers(state);
         break;
       default:
         console.log("message did not match: ", message);
