@@ -5,6 +5,7 @@ function PlayAudio() {
 
 function notify(word) {
   browser.notifications.create({
+    iconUrl: "./index.jpg",
     type: "basic",
     title: "AutoMeet",
     message: `The word '${word}' has appeared!`,
