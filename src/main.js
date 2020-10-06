@@ -207,12 +207,19 @@ getPageURL().then((url) => {
   } else {
     browser.storage.local.get("url").then((storedURL) => {
       storedURL = storedURL.url;
-      if (storedURL && storedURL !== url) {
-        const content = document.getElementById("buttons-div");
-        content.removeAttribute("buttons-div");
-        content.setAttribute("id", "single-instance-err");
-        content.innerHTML = `Supports only one tab now. Open the extension in <p id="stored-url">${storedURL}</p> and click "Reset" to use here`;
-      }
+      browser.tabs.query({}).then((tabs) => {
+        const urls = tabs.map((tab) => tab.url);
+        if (storedURL && storedURL !== url) {
+          if (!urls.includes(storedURL)) {
+            removeCurrentURLfromStorage();
+            return;
+          }
+          const content = document.getElementById("buttons-div");
+          content.removeAttribute("buttons-div");
+          content.setAttribute("id", "single-instance-err");
+          content.innerHTML = `Supports only one tab now. Open the extension in <p id="stored-url">${storedURL}</p> and click "Reset" to use here`;
+        }
+      });
     });
   }
 });
