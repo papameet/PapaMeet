@@ -202,8 +202,10 @@ getPageURL().then((url) => {
     const content = document.getElementById("buttons-div");
     content.removeAttribute("buttons-div");
     content.setAttribute("id", "incorrect-url")
-    content.innerHTML =
-      "<div id='uhimg'><img src='error-page.svg'></div><div id='uhoh'>Uh-oh, unsupported URL<div>";
+    content.innerHTML = `
+      <div id='uhimg'><img src='error-page.svg' id="error-icon"></div><div id='uhoh'>Uh-oh, unsupported URL</div>
+      <p class="right-wrong"><img src='right.png'><span>https://meet.google.com/xxx-xxxx-xxx/</span></p>
+      <p class="right-wrong"><img src='wrong.png'><span>https://www.example.com/automeet/</span></p>`;
   } else {
     browser.storage.local.get("url").then((storedURL) => {
       storedURL = storedURL.url;
