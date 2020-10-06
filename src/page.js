@@ -27,7 +27,7 @@ export function leaveCall(state) {
 
 export function joinCall() {
   const joinButton = getJoinButton();
-  if (joinButton !== undefined) {
+  if (joinButton) {
     joinButton.click();
     return 1;
   }
