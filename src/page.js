@@ -1,3 +1,5 @@
+import { removeCurrentURLfromStorage } from "./storage";
+
 const CAPTIONS_SELECTOR = "I98jWb";
 
 export function getJoinButton() {
@@ -109,6 +111,7 @@ export function leaveWhenPeopleLessThan(state) {
     if (count > peopleCountNow) {
       clearInterval(state.leaveId);
       leaveCall(state);
+      removeCurrentURLfromStorage();
       browser.storage.local.remove("joinTime");
     }
   }
