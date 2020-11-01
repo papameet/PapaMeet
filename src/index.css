@@ -228,3 +228,7 @@ input[type="number"] {
   vertical-align: middle;
   padding-bottom: 16px;
 }
+
+.tooltipped {
+  font-size: 1.2rem;
+}
