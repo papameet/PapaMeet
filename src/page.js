@@ -70,20 +70,20 @@ function canNotifyCaptions(currentCaptions, alertWord) {
   );
 }
 
-function captionsTurnedOff() {
+export function captionsTurnedOff() {
   return (
     document.getElementsByClassName(CAPTIONS_SELECTOR)[0].textContent ===
     "Turn on captions"
   );
 }
 
-function turnOnCaptions() {
+export function turnOnOffCaptions() {
   document.getElementsByClassName(CAPTIONS_SELECTOR)[0].click();
 }
 
 export function startSubtitleTimers(state) {
   if (state.subtitleTimerId) clearTimeout(state.subtitleTimerId);
-  if (captionsTurnedOff()) turnOnCaptions();
+  if (captionsTurnedOff()) turnOnOffCaptions();
 
   state.subtitleTimerId = setTimeout(function checkAndNotify() {
     let time = 500;
