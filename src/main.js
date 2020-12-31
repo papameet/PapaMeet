@@ -205,7 +205,7 @@ getPageURL().then((url) => {
     content.innerHTML = `
       <div id='uhimg'><img src='error-page.svg' id="error-icon"></div><div id='uhoh'>Uh-oh, unsupported URL</div>
       <p class="right-wrong"><img src='right.png'><span>https://meet.google.com/xxx-xxxx-xxx/</span></p>
-      <p class="right-wrong"><img src='wrong.png'><span>https://www.example.com/automeet/</span></p>`;
+      <p class="right-wrong"><img src='wrong.png'><span>https://www.example.com/papa/meet/</span></p>`;
   } else {
     browser.storage.local.get("url").then((storedURL) => {
       storedURL = storedURL.url;

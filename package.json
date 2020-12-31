@@ -1,5 +1,5 @@
 {
-  "name": "AutoMeet",
+  "name": "PapaMeet",
   "version": "1.0.0",
   "description": "",
   "browser": "main.js",
@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chdinesh1089/AutoMeet.git"
+    "url": "git+https://github.com/papameet/PapaMeet.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/chdinesh1089/AutoMeet/issues"
+    "url": "https://github.com/papameet/PapaMeet/issues"
   },
-  "homepage": "https://github.com/chdinesh1089/AutoMeet#readme",
+  "homepage": "https://github.com/papameet/PapaMeet#readme",
   "devDependencies": {
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",

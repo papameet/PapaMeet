@@ -7,7 +7,7 @@ function notify(word) {
   browser.notifications.create({
     iconUrl: "./index.jpg",
     type: "basic",
-    title: "AutoMeet",
+    title: "PapaMeet",
     message: `The word '${word}' has appeared!`,
   });
 }
