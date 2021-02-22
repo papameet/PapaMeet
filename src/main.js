@@ -226,9 +226,15 @@ getPageURL().then((url) => {
   }
 });
 
+function setupTooltip() {
+  const elems = document.querySelectorAll('.tooltipped');
+  M.Tooltip.init(elems, {});
+}
+
 setUpSettingsFromStorage(state).then((joinTime) => {
   setupTimepickers(joinTime);
   setupChips(state.alertWords);
+  setupTooltip();
   browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     browser.tabs
       .sendMessage(tabs[0].id, { message: "sendState", state })
