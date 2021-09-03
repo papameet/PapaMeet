@@ -4,7 +4,7 @@ import {
   getJoinButton,
   leaveWhenPeopleLessThan,
   startSubtitleTimers,
-  turnOnOffCaptions,
+  turnOffCaptions,
 } from "./page";
 import { getDateObject } from "./helpers";
 import { storeTimeoutIds, cancelPreviousTimeouts } from "./storage";
@@ -112,7 +112,7 @@ function sendJoinInfo(e) {
     // On clicking reset we want to turn off captions
     // This function is called on clicking reset.
     // So, we have this here.
-    if (!captionsTurnedOff()) turnOnOffCaptions();
+    if (!captionsTurnedOff()) turnOffCaptions();
   }
 
   browser.runtime.onMessage.addListener((recievedObj, sender, sendResponse) => {

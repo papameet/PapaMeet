@@ -1,6 +1,7 @@
 import { removeCurrentURLfromStorage } from "./storage";
 
-const CAPTIONS_SELECTOR = "I98jWb";
+const CAPTIONS_ON_SELECTOR = "[aria-label='Turn on captions (c)']";
+const CAPTIONS_OFF_SELECTOR = "[aria-label='Turn off captions (c)']";
 
 export function getJoinButton() {
   const spans = document.getElementsByTagName("span");
@@ -71,19 +72,25 @@ function canNotifyCaptions(currentCaptions, alertWord) {
 }
 
 export function captionsTurnedOff() {
-  return (
-    document.getElementsByClassName(CAPTIONS_SELECTOR)[0].textContent ===
-    "Turn on captions"
-  );
+  return document.querySelector(CAPTIONS_ON_SELECTOR) !== null;
 }
 
-export function turnOnOffCaptions() {
-  document.getElementsByClassName(CAPTIONS_SELECTOR)[0].click();
+function turnOnCaptions() {
+  const sel = document.querySelector(CAPTIONS_ON_SELECTOR);
+  if (sel) sel.click();
+  else console.warn("Cannot turn on captions. Captions on selector not found.");
+}
+
+export function turnOffCaptions() {
+  const sel = document.querySelector(CAPTIONS_OFF_SELECTOR);
+  if (sel) sel.click();
+  else
+    console.warn("Cannot turn off captions. Captions off selector not found.");
 }
 
 export function startSubtitleTimers(state) {
   if (state.subtitleTimerId) clearTimeout(state.subtitleTimerId);
-  if (captionsTurnedOff()) turnOnOffCaptions();
+  if (captionsTurnedOff()) turnOnCaptions();
 
   state.subtitleTimerId = setTimeout(function checkAndNotify() {
     let time = 500;
