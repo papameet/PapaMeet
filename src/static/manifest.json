@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "PapaMeet",
-  "version": "1.2",
+  "version": "1.3",
   "description": "Joins and quits meetings automatically.",
 
   "icons": {
